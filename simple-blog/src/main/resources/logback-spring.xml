@@ -1,0 +1,18 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                <!-- log에 색상을 넣지않았을 경우 -->
+                <!-- %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n-->
+                <!-- log에 색상을 넣었을 경우 -->
+                %red(%d{HH:mm:ss.SSS}) %blue([%thread]) %blue(%-5level) %blue(%logger{36}) - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>

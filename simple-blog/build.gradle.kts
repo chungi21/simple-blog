@@ -24,6 +24,12 @@ extra["snippetsDir"] = file("build/generated-snippets")
 
 dependencies {
 
+	// https://mvnrepository.com/artifact/io.github.microutils/kotlin-logging
+	implementation("io.github.microutils:kotlin-logging:3.0.5")
+
+	// https://mvnrepository.com/artifact/com.github.gavlyukovskiy/p6spy-spring-boot-starter
+	implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.2")
+
 	// https://mvnrepository.com/artifact/io.github.serpro69/kotlin-faker
 	implementation("io.github.serpro69:kotlin-faker:1.16.0")
 
