@@ -4,6 +4,8 @@ import com.example.simple_blog.domain.post.Post
 import com.example.simple_blog.domain.post.PostRepository
 import com.example.simple_blog.domain.post.PostRes
 import com.example.simple_blog.domain.post.toDTO
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -13,7 +15,7 @@ class PostService(
 ) {
 
     @Transactional(readOnly = true)
-    fun findFposts() : List<PostRes> {
-        return postRepository.findAll().map { it.toDTO()}
+    fun findFposts(pageable: Pageable) : Page<PostRes> {
+        return postRepository.findPosts(pageable).map { it.toDTO()}
     }
 }
