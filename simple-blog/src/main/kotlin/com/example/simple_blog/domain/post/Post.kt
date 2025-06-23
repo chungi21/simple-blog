@@ -2,6 +2,7 @@ package com.example.simple_blog.domain.post
 
 import com.example.simple_blog.domain.AuditingEntity
 import com.example.simple_blog.domain.member.Member
+import com.example.simple_blog.domain.member.toDTO
 import jakarta.persistence.*
 
 @Entity
@@ -17,7 +18,23 @@ class Post(title:String, content:String, member: Member) : AuditingEntity() {
         protected set
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Member::class)
+    @JoinColumn(name = "member_id", nullable = false)
     var member : Member = member
         protected set
 
+    override fun toString() : String{
+        return "Post(id=$id, title='$title', content='$content', member=$member)"
+    }
+
 }
+
+
+fun Post.toDTO() : PostRes {
+    return PostRes(
+        id = this.id!!,
+        title = this.title,
+        content = this.content,
+        member = this.member.toDTO()
+    )
+}
+

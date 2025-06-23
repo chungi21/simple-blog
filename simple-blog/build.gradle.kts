@@ -24,6 +24,9 @@ extra["snippetsDir"] = file("build/generated-snippets")
 
 dependencies {
 
+	// https://mvnrepository.com/artifact/com.linecorp.kotlin-jdsl/spring-data-kotlin-jdsl-starter
+	implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:2.2.1.RELEASE")
+
 	// https://mvnrepository.com/artifact/io.github.microutils/kotlin-logging
 	implementation("io.github.microutils:kotlin-logging:3.0.5")
 
