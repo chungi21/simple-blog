@@ -1,9 +1,6 @@
 package com.example.simple_blog.service
 
-import com.example.simple_blog.domain.member.Member
-import com.example.simple_blog.domain.member.MemberRepository
-import com.example.simple_blog.domain.member.MemberRes
-import com.example.simple_blog.domain.member.toDTO
+import com.example.simple_blog.domain.member.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -16,9 +13,24 @@ class MemberService(private val memberRepository: MemberRepository) {
     fun findAll() : MutableList<Member> = memberRepository.findAll()*/
 
     @Transactional(readOnly = true)
-    fun findAll(pageable: Pageable) : Page<MemberRes> =
+    fun findAll(pageable : Pageable) : Page<MemberRes> =
         memberRepository.findMembers(pageable).map{
             it.toDTO()
         }
+
+    @Transactional
+    fun saveMember(dto : MemberSaveReq): MemberRes {
+        return memberRepository.save(dto.toEntity()).toDTO()
+    }
+
+    @Transactional
+    fun deleteMember(id : Long){
+        return memberRepository.deleteById(id)
+    }
+
+    @Transactional(readOnly = true)
+    fun findMemberById(id : Long) : MemberRes{
+        return memberRepository.findById(id).orElseThrow().toDTO()
+    }
 
 }

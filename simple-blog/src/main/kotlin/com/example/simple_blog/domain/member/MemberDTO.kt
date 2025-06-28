@@ -1,6 +1,11 @@
 package com.example.simple_blog.domain.member
 
+import jakarta.validation.constraints.NotNull
+
+
 data class MemberSaveReq(
+
+    @field:NotNull(message = "require email")
     val email : String,
     val password : String,
     val role : Role
