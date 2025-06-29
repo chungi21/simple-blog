@@ -1,6 +1,7 @@
 package com.example.simple_blog.service
 
 import com.example.simple_blog.domain.member.*
+import com.example.simple_blog.exception.MemberNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -30,7 +31,10 @@ class MemberService(private val memberRepository: MemberRepository) {
 
     @Transactional(readOnly = true)
     fun findMemberById(id : Long) : MemberRes{
-        return memberRepository.findById(id).orElseThrow().toDTO()
+        return memberRepository.findById(id)
+            .orElseThrow{
+                throw MemberNotFoundException(id)
+            }.toDTO()
     }
 
 }
