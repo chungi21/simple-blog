@@ -27,11 +27,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter-jakarta:2.2.1.RELEASE")
 
-/*
-	// https://mvnrepository.com/artifact/com.linecorp.kotlin-jdsl/spring-data-kotlin-jdsl-starter
-	implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:2.2.1.RELEASE")
-*/
-
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop
+	implementation("org.springframework.boot:spring-boot-starter-aop:3.5.0")
 
 	// https://mvnrepository.com/artifact/io.github.microutils/kotlin-logging
 	implementation("io.github.microutils:kotlin-logging:3.0.5")
