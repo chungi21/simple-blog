@@ -24,6 +24,9 @@ extra["snippetsDir"] = file("build/generated-snippets")
 
 dependencies {
 
+	// https://mvnrepository.com/artifact/com.auth0/java-jwt
+	implementation("com.auth0:java-jwt:4.4.0")
+
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter-jakarta:2.2.1.RELEASE")
 
@@ -43,7 +46,7 @@ dependencies {
 	// implementation("org.springframework.boot:spring-boot-starter-cache")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	// implementation("org.springframework.boot:spring-boot-starter-data-redis")
-	// implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	// implementation("org.springframework.boot:spring-boot-starter-websocket")
