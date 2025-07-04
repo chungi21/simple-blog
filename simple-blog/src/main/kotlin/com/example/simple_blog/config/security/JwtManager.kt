@@ -10,15 +10,24 @@ class JwtManager {
 
     private val log = KotlinLogging.logger {}
 
-    fun generateAccessToken(principal: PrincipalDetails){
+    private val secretKey : String = "asdfsadf"
+    private val claimEmail = "email"
+    private val claimPassword = "password"
+    private val expireTime = 1000 * 60 * 60
 
-        JWT.create()
+    fun generateAccessToken(principal: PrincipalDetails) : String {
+
+        return JWT.create()
             .withSubject(principal.username)
-            .withExpiresAt(Date(System.nanoTime() + 1000*60*60))
-            .withClaim("email", principal.username)
-            .withClaim("password", principal.password)
-            .sign(Algorithm.HMAC512("asdfasdf"))
+            .withExpiresAt(Date(System.nanoTime() + expireTime))
+            .withClaim(claimEmail, principal.username)
+            .withClaim(claimPassword, principal.password)
+            .sign(Algorithm.HMAC512(secretKey))
+    }
 
+    fun getMemberEmail(token : String) : String? {
+        return JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token)
+            .getClaim(claimEmail).asString()
     }
 
 }

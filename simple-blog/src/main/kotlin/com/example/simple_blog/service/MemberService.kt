@@ -33,7 +33,7 @@ class MemberService(private val memberRepository: MemberRepository) {
     fun findMemberById(id : Long) : MemberRes{
         return memberRepository.findById(id)
             .orElseThrow{
-                throw MemberNotFoundException(id)
+                throw MemberNotFoundException(id.toString())
             }.toDTO()
     }
 
