@@ -6,7 +6,6 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import mu.KotlinLogging
-import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
@@ -14,7 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class CustomUserNameAuthenticationFilter(
 	private val om : ObjectMapper
 ) : UsernamePasswordAuthenticationFilter() {
-	
+
 	private val log = KotlinLogging.logger {}
 	private val jwtManager = JwtManager()
 
@@ -45,9 +44,9 @@ class CustomUserNameAuthenticationFilter(
 		log.info {"로그인 완료! JWT 토큰 만들어서 response."}
 		val principalDetails = authResult?.principal as PrincipalDetails
 		val jwtToken = jwtManager.generateAccessToken(principalDetails)
-		response?.addHeader("Authorzation","Bearer "+jwtToken)
+		response?.addHeader(jwtManager.jwtHeader,"Bearer "+jwtToken)
 
 	}
-	
+
 }
 
