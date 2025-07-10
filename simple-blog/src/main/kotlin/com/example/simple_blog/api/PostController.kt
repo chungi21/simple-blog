@@ -1,9 +1,8 @@
 package com.example.simple_blog.api
 
-import com.example.simple_blog.domain.member.MemberSaveReq
 import com.example.simple_blog.domain.post.PostSaveReq
 import com.example.simple_blog.service.PostService
-import com.example.simple_blog.util.value.CmResDTO
+import com.example.simple_blog.util.value.value.CmResDTO
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus

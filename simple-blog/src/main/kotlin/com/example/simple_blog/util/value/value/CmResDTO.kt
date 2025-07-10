@@ -1,4 +1,4 @@
-package com.example.simple_blog.util.value
+package com.example.simple_blog.util.value.value
 
 data class CmResDTO<T> (
     val resultCode : T,
