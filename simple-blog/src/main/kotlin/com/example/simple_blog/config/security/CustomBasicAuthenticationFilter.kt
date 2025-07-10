@@ -24,7 +24,7 @@ class CustomBasicAuthenticationFilter(
 
 		log.info {"권한이나 인증이 필요한 요청이 들어옴"}
 
-		val token = request.getHeader(jwtManager.jwtHeader).replace("Bearer ","")
+		val token = request.getHeader(jwtManager.authorizationHeader).replace(jwtManager.jwtHeader,"")
 		if (token == null) {
 			chain.doFilter(request,response)
 			return

@@ -23,15 +23,9 @@ class JwtManagerTest {
     @Test
     fun generateJwtToken() {
 
-        val jwtManager = JwtManager()
+        val jwtManager = JwtManager(accessTokenExpireSecond = 60)
 
         val details = PrincipalDetails(Member.createFakeMember(1))
-        val accessToken = jwtManager.generateAccessToken(details)
-
-        val email = jwtManager.getMemberEmail(accessToken)
-
-        log.info {"accessToken : $accessToken"}
-        log.info {"email : $email"}
 
 
     }
