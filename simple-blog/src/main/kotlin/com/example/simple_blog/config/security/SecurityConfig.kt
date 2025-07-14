@@ -1,6 +1,8 @@
 package com.example.simple_blog.config.security
 
 import com.example.simple_blog.domain.member.MemberRepository
+import com.example.simple_blog.util.value.func.responseData
+import com.example.simple_blog.util.value.value.CmResDTO
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -8,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse
 import mu.KotlinLogging
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -17,12 +20,14 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -62,13 +67,40 @@ class SecurityConfig(
         // 인가 설정
         http.authorizeHttpRequests {
             it
+                .requestMatchers("/login", "/logout").permitAll()
                 .requestMatchers("/posts").hasAnyRole("ADMIN")  // ROLE_ 생략
                 .anyRequest().permitAll()
+        }
+
+        http.logout {
+            it.logoutUrl("/logout").logoutSuccessHandler(CustomLogoutSuccessHandler(objectMapper))  // GET 요청이 아니라 POST 요청이어야 로그아웃 됨
         }
 
         return http.build()
     }
 
+    class CustomLogoutSuccessHandler(
+        private val om:ObjectMapper
+    ) : LogoutSuccessHandler{
+
+        private  val log = KotlinLogging.logger {}
+
+        override fun onLogoutSuccess(
+            request: HttpServletRequest,
+            response: HttpServletResponse,
+            authentication: Authentication?
+        ) {
+            log.info{ "logout 성공!!" }
+            val context = SecurityContextHolder.getContext()
+            context.authentication = null
+            SecurityContextHolder.clearContext()
+
+            val cmResDto = CmResDTO(HttpStatus.OK, "logout 성공!", null)
+
+            responseData(response, om.writeValueAsString(cmResDto))
+        }
+
+    }
 
 
     class CustomFailureHandler : AuthenticationFailureHandler {
@@ -76,13 +108,14 @@ class SecurityConfig(
         private  val log = KotlinLogging.logger {}
 
         override fun onAuthenticationFailure(
-            request: HttpServletRequest?,
-            response: HttpServletResponse?,
+            request: HttpServletRequest,
+            response: HttpServletResponse,
             exception: AuthenticationException?
         ) {
-            log.warn { "login 실패!!!" }
-            response?.sendError(HttpServletResponse.SC_FORBIDDEN, "인증 실패")
+            log.info { "login 실패!!!" }
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "인증 실패")
         }
+
     }
 
     class CustomSuccessHandler : AuthenticationSuccessHandler {
@@ -90,13 +123,14 @@ class SecurityConfig(
         private  val log = KotlinLogging.logger {}
 
         override fun onAuthenticationSuccess(
-            request: HttpServletRequest?,
-            response: HttpServletResponse?,
+            request: HttpServletRequest,
+            response: HttpServletResponse,
             authentication: Authentication?
         ) {
-            log.warn { "login 성공!!!" }
-            response?.sendError(HttpServletResponse.SC_FORBIDDEN, "인증 성공")
+            log.info { "login 성공!!!" }
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "인증 성공")
         }
+
     }
 
 
@@ -105,12 +139,12 @@ class SecurityConfig(
         private  val log = KotlinLogging.logger {}
 
         override fun commence(
-            request: HttpServletRequest?,
-            response: HttpServletResponse?,
+            request: HttpServletRequest,
+            response: HttpServletResponse,
             authException: AuthenticationException?
         ) {
             log.info { " AuthenticationEntryPoint!!!" }
-            response?.sendError(HttpServletResponse.SC_FORBIDDEN)
+            response.sendError(HttpServletResponse.SC_FORBIDDEN)
         }
 
     }
@@ -120,12 +154,12 @@ class SecurityConfig(
         private  val log = KotlinLogging.logger {}
 
         override fun handle(
-            request: HttpServletRequest?,
-            response: HttpServletResponse?,
+            request: HttpServletRequest,
+            response: HttpServletResponse,
             accessDeniedException: AccessDeniedException?
         ) {
             log.info { " AccessDeniedHandler!!!" }
-            response?.sendError(HttpServletResponse.SC_FORBIDDEN)
+            response.sendError(HttpServletResponse.SC_FORBIDDEN)
         }
 
     }

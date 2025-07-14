@@ -19,8 +19,19 @@ class Member(email:String, password:String, role:Role) : AuditingEntity() {
     var role:Role = role
         protected set
 
+    fun toDTO() : MemberRes {
+        return MemberRes(
+            id = this.id!!,
+            email =  this.email,
+            password = this.password,
+            role = this.role,
+            createdAt = this.createAt,
+            updateAt = this.updateAt
+        )
+    }
+
     override fun toString() : String {
-        return "Member(id=$id, email='$email', password='$password', role='$role')"
+        return "Member(id=$id, email='$email', password='$password', role='$role', createdAt='$createAt')"
     }
 
     companion object {
@@ -31,15 +42,6 @@ class Member(email:String, password:String, role:Role) : AuditingEntity() {
         }
     }
 
-}
-
-fun Member.toDTO() : MemberRes {
-    return MemberRes(
-        id = this.id!!,
-        email =  this.email,
-        password = this.password,
-        role = this.role
-    )
 }
 
 enum class Role {
