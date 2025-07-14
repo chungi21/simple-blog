@@ -1,17 +1,20 @@
 package com.example.simple_blog.config.security
 
 import com.example.simple_blog.domain.member.MemberSaveReq
-import com.example.simple_blog.util.value.func.responseData
-import com.example.simple_blog.util.value.value.CmResDTO
+import com.example.simple_blog.util.CookieProvider
+import com.example.simple_blog.util.func.responseData
+import com.example.simple_blog.util.value.CmResDTO
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import mu.KotlinLogging
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import java.util.concurrent.TimeUnit
 
 class CustomUserNameAuthenticationFilter(
 	private val om : ObjectMapper
@@ -45,9 +48,19 @@ class CustomUserNameAuthenticationFilter(
 	) {
 
 		log.info {"로그인 완료! JWT 토큰 만들어서 response."}
-		val principalDetails = authResult?.principal as PrincipalDetails
-		val jwtToken = jwtManager.generateAccessToken(om.writeValueAsString(principalDetails))
-		response?.addHeader(jwtManager.authorizationHeader,jwtManager.jwtHeader+jwtToken)
+
+		val principalDetails = authResult.principal as PrincipalDetails
+		val accessToken = jwtManager.generateAccessToken(om.writeValueAsString(principalDetails))
+		val refreshToken = jwtManager.generateRefreshToken(om.writeValueAsString(principalDetails))
+
+		val refreshCookie = CookieProvider.createCookie(
+			"refreshCookie",
+			refreshToken,
+			TimeUnit.DAYS.toSeconds(jwtManager.refreshTokenExpireDay)
+		)
+
+		response.addHeader(jwtManager.authorizationHeader,jwtManager.jwtHeader+accessToken)
+		response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString())
 
 		val jsonResult = om.writeValueAsString(CmResDTO(HttpStatus.OK, "login sucess", principalDetails.member))
 		responseData(response, jsonResult)
@@ -55,4 +68,16 @@ class CustomUserNameAuthenticationFilter(
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -1,4 +1,4 @@
-package com.example.simple_blog.util.value.func
+package com.example.simple_blog.util.func
 
 import jakarta.servlet.http.HttpServletResponse
 import java.io.PrintWriter

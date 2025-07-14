@@ -1,8 +1,8 @@
 package com.example.simple_blog.config.security
 
 import com.example.simple_blog.domain.member.MemberRepository
-import com.example.simple_blog.util.value.func.responseData
-import com.example.simple_blog.util.value.value.CmResDTO
+import com.example.simple_blog.util.func.responseData
+import com.example.simple_blog.util.value.CmResDTO
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

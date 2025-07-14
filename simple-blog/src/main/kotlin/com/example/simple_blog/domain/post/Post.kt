@@ -2,7 +2,6 @@ package com.example.simple_blog.domain.post
 
 import com.example.simple_blog.domain.AuditingEntity
 import com.example.simple_blog.domain.member.Member
-import com.example.simple_blog.domain.member.toDTO
 import jakarta.persistence.*
 
 @Entity
@@ -27,7 +26,6 @@ class Post(title:String, content:String, member: Member) : AuditingEntity() {
     }
 
 }
-
 
 fun Post.toDTO() : PostRes {
     return PostRes(
