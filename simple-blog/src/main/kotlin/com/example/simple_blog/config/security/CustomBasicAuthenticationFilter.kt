@@ -22,110 +22,13 @@ class CustomBasicAuthenticationFilter(
 
 	private val log = KotlinLogging.logger {}
 	private val jwtManager = JwtManager()
-
 	override fun doFilterInternal(
 		request: HttpServletRequest,
 		response: HttpServletResponse,
 		chain: FilterChain
 	) {
-		log.info { "권한이나 인증이 필요한 요청이 들어옴" }
-
 		val header = request.getHeader(jwtManager.authorizationHeader)
 		if (header == null || !header.startsWith(jwtManager.jwtHeader)) {
-			log.warn { "Authorization 헤더가 없거나 형식이 잘못됨" }
-			chain.doFilter(request, response)
-			return
-		}
-
-		val accessToken = header.replace(jwtManager.jwtHeader, "")
-		val accessTokenResult: TokenValidResult = jwtManager.validAccessToken(accessToken)
-		if (accessTokenResult is TokenValidResult.Failure) {
-			if (accessTokenResult.exception is TokenExpiredException) {
-
-				// accessToken 유효시간이나 로그인이 제대로 되지않는다면 accessToken이 제대로 없다.
-				log.info { "TokenExpiredException ==> ${accessTokenResult.exception.javaClass}" }
-
-/*
-				val refreshToken = CookieProvider.getCookie(request, "refreshCookie").orElseThrow()
-				val refreshTokenResult = jwtManager.validRefreshToken(refreshToken)
-				if (refreshTokenResult is TokenValidResult.Failure) {
-					throw RuntimeException("refreshToken invalid")
-				}
-
-
-				val principalString = jwtManager.getPrincipalStringByRefreshToken(refreshToken)
-				val details = om.readValue(principalString, PrincipalDetails::class.java)
-
-				val accessToken = jwtManager.generateAccessToken(om.writeValueAsString(details))
-				response?.addHeader(jwtManager.authorizationHeader, jwtManager.jwtHeader + accessToken)
-
-
-				val authentication = UsernamePasswordAuthenticationToken(
-					details,
-					null,  // 비밀번호 null로 넣고,
-					details.authorities  // 권한을 반드시 넘겨야 인가 성공
-				)
-
-				SecurityContextHolder.getContext().authentication = authentication
-
-				chain.doFilter(request, response)
-
-				return
-*/
-
-
-			} else {
-				log.info { "else Exception" + accessTokenResult.exception.stackTraceToString() }
-			}
-		}
-
-		val email = jwtManager.getMemberEmail(accessToken)
-		if (email == null) {
-			log.error { "JWT에서 이메일 claim 추출 실패" }
-			chain.doFilter(request, response)
-			return
-		}
-
-		val member = memberRepository.findMemberByEmail(email)
-		if (member == null) {
-			log.error { "이메일에 해당하는 사용자 없음: $email" }
-			chain.doFilter(request, response)
-			return
-		}
-
-		val principalDetails = PrincipalDetails(member)
-
-		val authentication = UsernamePasswordAuthenticationToken(
-			principalDetails,
-			null,  // 비밀번호 null로 넣고,
-			principalDetails.authorities  // 권한을 반드시 넘겨야 인가 성공
-		)
-
-		SecurityContextHolder.getContext().authentication = authentication
-
-		chain.doFilter(request, response)
-	}
-}
-/*
-class CustomBasicAuthenticationFilter(
-	private val memberRepository: MemberRepository,
-	private val om: ObjectMapper,
-	authenticationManager: AuthenticationManager
-) : BasicAuthenticationFilter(authenticationManager) {
-
-	private val log = KotlinLogging.logger {}
-	private val jwtManager = JwtManager()
-
-	override fun doFilterInternal(
-		request: HttpServletRequest,
-		response: HttpServletResponse,
-		chain: FilterChain
-	) {
-		log.info { "권한이나 인증이 필요한 요청이 들어옴" }
-
-		val header = request.getHeader(jwtManager.authorizationHeader)
-		if (header == null || !header.startsWith(jwtManager.jwtHeader)) {
-			log.warn { "Authorization 헤더가 없거나 형식이 잘못됨" }
 			chain.doFilter(request, response)
 			return
 		}
@@ -134,46 +37,62 @@ class CustomBasicAuthenticationFilter(
 		val accessTokenResult = jwtManager.validAccessToken(accessToken)
 
 		val principalDetails: PrincipalDetails = when (accessTokenResult) {
+
 			is TokenValidResult.Success -> {
-				val principalString = jwtManager.getPrincipalStringByAccessToken(accessToken)
-				om.readValue(principalString, PrincipalDetails::class.java)
+				// AccessToken 유효 → 이메일로 복원 (AccessToken엔 이메일만 있으므로)
+				val email = jwtManager.getMemberEmail(accessToken)
+					?: return chain.doFilter(request, response) // 실패시 필터 통과
+				val member = memberRepository.findMemberByEmail(email)
+					?: return chain.doFilter(request, response)
+				PrincipalDetails(member)
 			}
+
 			is TokenValidResult.Failure -> {
-				log.warn { "AccessToken 유효하지 않음. ${accessTokenResult.exception}" }
-
 				if (accessTokenResult.exception is TokenExpiredException) {
-					val refreshToken = CookieProvider.getCookie(request, "refreshCookie")
-						.orElseThrow { RuntimeException("refreshToken 없음") }
+					log.info { "AccessToken 만료 → RefreshToken 검사 및 재발급 시도" }
 
-					val refreshTokenResult = jwtManager.validRefreshToken(refreshToken)
-					if (refreshTokenResult is TokenValidResult.Failure) {
-						throw RuntimeException("refreshToken 유효하지 않음")
+					try {
+						val refreshToken = CookieProvider.getCookie(request, "refreshCookie").orElseThrow()
+						val refreshTokenResult = jwtManager.validRefreshToken(refreshToken)
+
+						if (refreshTokenResult is TokenValidResult.Failure) {
+							log.error { "RefreshToken도 유효하지 않음!" }
+							return chain.doFilter(request, response)
+						}
+
+						// 여기선 refreshToken에는 principal 전체 JSON이 있으므로
+						val principalJson = jwtManager.getPrincipalStringByRefreshToken(refreshToken)
+
+						val details = om.readValue(principalJson, PrincipalDetails::class.java)
+
+						// AccessToken 재발급 후 헤더에 추가
+						val newAccessToken = jwtManager.generateAccessToken(details.member.email)
+						response.addHeader(jwtManager.authorizationHeader, jwtManager.jwtHeader + newAccessToken)
+
+						details
+					} catch (e: Exception) {
+						log.error { "RefreshToken 처리 중 예외 발생: ${e.message}" }
+						return chain.doFilter(request, response)
 					}
 
-					val principalString = jwtManager.getPrincipalStringByRefreshToken(refreshToken)
-					val refreshedDetails = om.readValue(principalString, PrincipalDetails::class.java)
 
-					// 🔥 accessToken 재발급 (principal 기반)
-					val newAccessToken = jwtManager.generateAccessToken(principalString)
-					response.addHeader(jwtManager.authorizationHeader, jwtManager.jwtHeader + newAccessToken)
-
-					refreshedDetails
 				} else {
-					chain.doFilter(request, response)
-					return
+					log.error { "AccessToken 유효성 검사 실패: ${accessTokenResult.exception.message}" }
+					return chain.doFilter(request, response)
 				}
 			}
 		}
 
+		// SecurityContext에 인증 저장
 		val authentication = UsernamePasswordAuthenticationToken(
 			principalDetails,
 			null,
 			principalDetails.authorities
 		)
-
 		SecurityContextHolder.getContext().authentication = authentication
+
 		chain.doFilter(request, response)
 	}
+
 }
 
-*/
