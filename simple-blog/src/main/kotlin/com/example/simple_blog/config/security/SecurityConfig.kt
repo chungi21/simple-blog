@@ -68,7 +68,7 @@ class SecurityConfig(
         http.authorizeHttpRequests {
             it
                 .requestMatchers("/login", "/logout").permitAll()
-                .requestMatchers("/posts").hasAnyRole("ADMIN")  // ROLE_ 생략
+                .requestMatchers("/api/members").hasRole("USER")  // ROLE_ 생략
                 .anyRequest().permitAll()
         }
 
@@ -168,7 +168,8 @@ class SecurityConfig(
     fun authenticationFilter() : CustomBasicAuthenticationFilter{
         return CustomBasicAuthenticationFilter(
             authenticationManager = authenticationManager(),
-            memberRepository = memberRepository
+            memberRepository = memberRepository,
+            om = objectMapper
         )
     }
 

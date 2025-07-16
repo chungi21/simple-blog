@@ -50,7 +50,8 @@ class CustomUserNameAuthenticationFilter(
 		log.info {"로그인 완료! JWT 토큰 만들어서 response."}
 
 		val principalDetails = authResult.principal as PrincipalDetails
-		val accessToken = jwtManager.generateAccessToken(om.writeValueAsString(principalDetails))
+		// val accessToken = jwtManager.generateAccessToken(om.writeValueAsString(principalDetails))
+		val accessToken = jwtManager.generateAccessToken(principalDetails.member.email)
 		val refreshToken = jwtManager.generateRefreshToken(om.writeValueAsString(principalDetails))
 
 		val refreshCookie = CookieProvider.createCookie(
@@ -63,6 +64,7 @@ class CustomUserNameAuthenticationFilter(
 		response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString())
 
 		val jsonResult = om.writeValueAsString(CmResDTO(HttpStatus.OK, "login sucess", principalDetails.member))
+
 		responseData(response, jsonResult)
 
 	}

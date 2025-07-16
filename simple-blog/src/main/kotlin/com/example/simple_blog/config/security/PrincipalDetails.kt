@@ -19,6 +19,7 @@ class PrincipalDetails(
         log.info("Role 검증")
         val collection: MutableCollection<GrantedAuthority> = ArrayList()
         collection.add(GrantedAuthority { "ROLE_" + member.role })
+
         return collection
     }
 
