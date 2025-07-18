@@ -43,6 +43,11 @@ class JwtManager(
         return doGenerateToken(expireDate, principal, refreshSecretKey)
     }
 
+/*    fun generateAccessToken(principal: String) : String {
+        val expireDate = Date(System.nanoTime() + TimeUnit.SECONDS.toMillis(accessTokenExpireSecond))
+        return doGenerateToken(expireDate, principal, accessSecretKey)
+    }*/
+
     fun generateAccessToken(principal: String): String {
         val expireDate = Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(accessTokenExpireSecond))
 
@@ -69,10 +74,12 @@ class JwtManager(
         return decodedJWT.getClaim(claimPrincipal).asString()
     }
 
-    private fun getDecodeJwt(secretKey: String, token: String): DecodedJWT {
-        val verifier: JWTVerifier = JWT.require(Algorithm.HMAC512(secretKey))
+
+    private fun getDecodeJwt(secretKey : String, token : String) : DecodedJWT {
+        val verifier: JWTVerifier = JWT.require(Algorithm.HMAC512(accessSecretKey))
             .build()
-        return verifier.verify(token)
+        val decodedJWT : DecodedJWT = verifier.verify(token)
+        return decodedJWT
     }
 
     fun validAccessToken(token : String) : TokenValidResult {
@@ -99,3 +106,20 @@ sealed class TokenValidResult {
     class Success(val successValue : Boolean = true) : TokenValidResult()
     class Failure(val exception : JWTVerificationException) : TokenValidResult()
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

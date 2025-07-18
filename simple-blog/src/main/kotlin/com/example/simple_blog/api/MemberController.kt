@@ -39,10 +39,4 @@ class MemberController(private val memberService: MemberService) {
         return CmResDTO(HttpStatus.OK, "delete Member by id", memberService.deleteMember(id))
     }
 
-    @PostMapping("/member")
-    fun save(@Valid @RequestBody dto : MemberSaveReq): CmResDTO<*> {
-        return CmResDTO(HttpStatus.OK, "save Member", memberService.saveMember(dto))
-    }
-
-
 }

@@ -20,11 +20,6 @@ class MemberService(private val memberRepository: MemberRepository) {
         }
 
     @Transactional
-    fun saveMember(dto : MemberSaveReq): MemberRes {
-        return memberRepository.save(dto.toEntity()).toDTO()
-    }
-
-    @Transactional
     fun deleteMember(id : Long){
         return memberRepository.deleteById(id)
     }

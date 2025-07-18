@@ -22,68 +22,64 @@ class CustomBasicAuthenticationFilter(
 
 	private val log = KotlinLogging.logger {}
 	private val jwtManager = JwtManager()
+
 	override fun doFilterInternal(
 		request: HttpServletRequest,
 		response: HttpServletResponse,
 		chain: FilterChain
 	) {
-		val header = request.getHeader(jwtManager.authorizationHeader)
-		if (header == null || !header.startsWith(jwtManager.jwtHeader)) {
+		log.info { "권한이나 인증이 필요한 요청이 들어옴" }
+
+		val uri = request.requestURI
+		val skipUrls = listOf(
+			"/login", "/logout", "/auth/login", "/auth/member", "/api/token/refresh"
+		)
+
+		// ✅ 1. 인증이 필요 없는 요청이라면 필터 통과
+		if (skipUrls.any { uri.startsWith(it) }) {
+			log.info { "인증이 필요 없는 요청 $uri → 필터 통과" }
 			chain.doFilter(request, response)
 			return
 		}
 
-		val accessToken = header.replace(jwtManager.jwtHeader, "")
-		val accessTokenResult = jwtManager.validAccessToken(accessToken)
-
-		val principalDetails: PrincipalDetails = when (accessTokenResult) {
-
-			is TokenValidResult.Success -> {
-				// AccessToken 유효 → 이메일로 복원 (AccessToken엔 이메일만 있으므로)
-				val email = jwtManager.getMemberEmail(accessToken)
-					?: return chain.doFilter(request, response) // 실패시 필터 통과
-				val member = memberRepository.findMemberByEmail(email)
-					?: return chain.doFilter(request, response)
-				PrincipalDetails(member)
-			}
-
-			is TokenValidResult.Failure -> {
-				if (accessTokenResult.exception is TokenExpiredException) {
-					log.info { "AccessToken 만료 → RefreshToken 검사 및 재발급 시도" }
-
-					try {
-						val refreshToken = CookieProvider.getCookie(request, "refreshCookie").orElseThrow()
-						val refreshTokenResult = jwtManager.validRefreshToken(refreshToken)
-
-						if (refreshTokenResult is TokenValidResult.Failure) {
-							log.error { "RefreshToken도 유효하지 않음!" }
-							return chain.doFilter(request, response)
-						}
-
-						// 여기선 refreshToken에는 principal 전체 JSON이 있으므로
-						val principalJson = jwtManager.getPrincipalStringByRefreshToken(refreshToken)
-
-						val details = om.readValue(principalJson, PrincipalDetails::class.java)
-
-						// AccessToken 재발급 후 헤더에 추가
-						val newAccessToken = jwtManager.generateAccessToken(details.member.email)
-						response.addHeader(jwtManager.authorizationHeader, jwtManager.jwtHeader + newAccessToken)
-
-						details
-					} catch (e: Exception) {
-						log.error { "RefreshToken 처리 중 예외 발생: ${e.message}" }
-						return chain.doFilter(request, response)
-					}
-
-
-				} else {
-					log.error { "AccessToken 유효성 검사 실패: ${accessTokenResult.exception.message}" }
-					return chain.doFilter(request, response)
-				}
-			}
+		// ✅ 2. Authorization 헤더 체크
+		val header = request.getHeader(jwtManager.authorizationHeader)
+		if (header == null || !header.startsWith(jwtManager.jwtHeader)) {
+			log.warn { "Authorization 헤더가 없거나 형식이 잘못됨" }
+			chain.doFilter(request, response)
+			return
 		}
 
-		// SecurityContext에 인증 저장
+		// ✅ 3. AccessToken 검증
+		val accessToken = header.replace(jwtManager.jwtHeader, "")
+		val accessTokenResult: TokenValidResult = jwtManager.validAccessToken(accessToken)
+		if (accessTokenResult is TokenValidResult.Failure) {
+			if (accessTokenResult.exception is TokenExpiredException) {
+				log.info { "AccessToken 만료됨: ${accessTokenResult.exception}" }
+			} else {
+				log.warn { "AccessToken 오류: ${accessTokenResult.exception.stackTraceToString()}" }
+			}
+			chain.doFilter(request, response)
+			return
+		}
+
+		// ✅ 4. 이메일 추출 및 사용자 조회
+		val email = jwtManager.getMemberEmail(accessToken)
+		if (email == null) {
+			log.error { "JWT에서 이메일 claim 추출 실패" }
+			chain.doFilter(request, response)
+			return
+		}
+
+		val member = memberRepository.findMemberByEmail(email)
+		if (member == null) {
+			log.error { "이메일에 해당하는 사용자 없음: $email" }
+			chain.doFilter(request, response)
+			return
+		}
+
+		// ✅ 5. 인증객체 생성 및 SecurityContext에 저장
+		val principalDetails = PrincipalDetails(member)
 		val authentication = UsernamePasswordAuthenticationToken(
 			principalDetails,
 			null,
@@ -95,4 +91,3 @@ class CustomBasicAuthenticationFilter(
 	}
 
 }
-

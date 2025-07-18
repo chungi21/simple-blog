@@ -50,6 +50,7 @@ class CustomUserNameAuthenticationFilter(
 		log.info {"로그인 완료! JWT 토큰 만들어서 response."}
 
 		val principalDetails = authResult.principal as PrincipalDetails
+		// val accessToken = jwtManager.generateAccessToken(om.writeValueAsString(principalDetails))
 		val accessToken = jwtManager.generateAccessToken(principalDetails.member.email)
 		val refreshToken = jwtManager.generateRefreshToken(om.writeValueAsString(principalDetails))
 
@@ -69,16 +70,4 @@ class CustomUserNameAuthenticationFilter(
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
