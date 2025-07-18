@@ -4,11 +4,10 @@ import com.example.simple_blog.config.security.PrincipalDetails
 import com.example.simple_blog.domain.member.MemberRepository
 import com.example.simple_blog.domain.member.MemberRes
 import com.example.simple_blog.domain.member.MemberSaveReq
-import com.example.simple_blog.domain.member.toEntity
-import com.example.simple_blog.exception.MemberNotFoundException
 import mu.KotlinLogging
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

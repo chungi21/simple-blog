@@ -95,7 +95,7 @@ class InitData(
 
     private fun generateMember() : Member = MemberSaveReq(
         email = faker.internet.safeEmail(),
-        password = "1234",
+        rawpassword = "1234",
         role = Role.USER
     ).toEntity()
 
