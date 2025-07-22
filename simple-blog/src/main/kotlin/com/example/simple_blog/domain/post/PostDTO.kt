@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotNull
 
 data class PostSaveReq(
     @field:NotNull(message = "require title")
-    val title : String?,
-    val content : String?,
+    val title : String,
+    val content : String,
     @field:NotNull(message = "require memberId")
     val memberId : Long?
 )
@@ -27,4 +27,3 @@ data class PostRes(
     val content : String,
     val member : MemberRes
 )
-

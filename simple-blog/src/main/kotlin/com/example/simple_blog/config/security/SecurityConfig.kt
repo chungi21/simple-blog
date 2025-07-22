@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse
 import mu.KotlinLogging
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AuthenticationManager
@@ -67,8 +68,18 @@ class SecurityConfig(
         // 인가 설정
         http.authorizeHttpRequests {
             it
+                // 로그인 및 로그아웃은 모두 접근 허용
                 .requestMatchers("/login", "/logout").permitAll()
-                .requestMatchers("/api/members").hasRole("USER")  // ROLE_ 생략
+
+                // 회원 API는 USER 권한만
+                .requestMatchers("/api/members").hasRole("USER")
+
+                .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/*").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/posts/new", "/api/posts/*/edit").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/posts").hasRole("USER")
+                .requestMatchers(HttpMethod.PUT, "/api/posts/*").hasRole("USER")
+                .requestMatchers(HttpMethod.DELETE, "/api/posts/*").hasRole("USER")
+                // 그 외는 모두 허용
                 .anyRequest().permitAll()
         }
 

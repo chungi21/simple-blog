@@ -23,6 +23,16 @@ class PostService(
     }
 
     @Transactional
+    fun save(dto: PostSaveReq, member: Member): PostRes {
+        val post = Post(
+            title = dto.title,
+            content = dto.content,
+            member = member
+        )
+        return postRepository.save(post).toDTO()
+    }
+
+    @Transactional
     fun deletePost(id : Long){
         return postRepository.deleteById(id)
     }
