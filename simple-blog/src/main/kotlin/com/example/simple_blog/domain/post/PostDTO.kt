@@ -12,6 +12,17 @@ data class PostSaveReq(
     val memberId : Long?
 )
 
+data class PostUpdateReq(
+    val title: String,
+    val content: String
+)
+
+data class PostEditRes(
+    val id: Long,
+    val title: String,
+    val content: String
+)
+
 fun PostSaveReq.toEntity() : Post {
 
     return Post(

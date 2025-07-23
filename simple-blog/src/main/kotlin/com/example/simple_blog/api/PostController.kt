@@ -2,6 +2,7 @@ package com.example.simple_blog.api
 
 import com.example.simple_blog.config.security.PrincipalDetails
 import com.example.simple_blog.domain.post.PostSaveReq
+import com.example.simple_blog.domain.post.PostUpdateReq
 import com.example.simple_blog.service.PostService
 import com.example.simple_blog.util.value.CmResDTO
 import org.springframework.data.domain.Pageable
@@ -51,8 +52,26 @@ class PostController(
         return CmResDTO(HttpStatus.OK, "write form", mapOf("writer" to member.toDTO()))
     }
 
-    // 게시글 수정 Form (화면 요청) - GET, /api/posts/{postId}/edit
-
     // 게시글 수정 - PUT or PATCH, /api/posts/{postId}
+    @PutMapping("/posts/{postId}")
+    fun updatePost(
+        @PathVariable postId: Long,
+        @RequestBody dto: PostUpdateReq,
+        @AuthenticationPrincipal principal: PrincipalDetails
+    ): CmResDTO<*> {
+        val member = principal.member
+        return CmResDTO(HttpStatus.OK, "update post", postService.updatePost(postId, dto, member))
+    }
+
+    // 게시글 수정 Form (화면 요청) - GET, /api/posts/{postId}/edit
+    @GetMapping("/posts/{postId}/edit")
+    fun editForm(
+        @PathVariable postId: Long,
+        @AuthenticationPrincipal principal: PrincipalDetails
+    ): CmResDTO<*> {
+        val member = principal.member
+        val response = postService.getPostForEdit(postId, member)
+        return CmResDTO(HttpStatus.OK, "edit form", response)
+    }
 
 }

@@ -25,6 +25,11 @@ class Post(title:String, content:String, member: Member) : AuditingEntity() {
         return "Post(id=$id, title='$title', content='$content', member=$member)"
     }
 
+    fun update(title: String, content: String) {
+        this.title = title
+        this.content = content
+    }
+
 }
 
 fun Post.toDTO() : PostRes {
