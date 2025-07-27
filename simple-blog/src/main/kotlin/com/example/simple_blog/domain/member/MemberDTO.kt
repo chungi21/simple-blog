@@ -7,13 +7,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
 
-
+// 회원가입용
 data class MemberSaveReq(
 
     @field:NotNull(message = "require email")
     val email : String,
 
-    @field:NotNull(message = "require email")
+    @field:NotNull(message = "require nickname")
     val nickname : String,
 
     @JsonProperty("password")
@@ -33,8 +33,14 @@ data class MemberSaveReq(
         return BeanAccessor.getBean(PasswordEncoder::class)
             .encode(this.rawpassword)
     }
-
 }
+
+// 로그인용
+data class LoginReq(
+    val email: String,
+    @JsonProperty("password")
+    val password: String
+)
 
 data class MemberRes(
     var id : Long,

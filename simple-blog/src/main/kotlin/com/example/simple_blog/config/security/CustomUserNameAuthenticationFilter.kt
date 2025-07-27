@@ -1,6 +1,6 @@
 package com.example.simple_blog.config.security
 
-import com.example.simple_blog.domain.member.MemberSaveReq
+import com.example.simple_blog.domain.member.LoginReq
 import com.example.simple_blog.util.CookieProvider
 import com.example.simple_blog.util.func.responseData
 import com.example.simple_blog.util.value.CmResDTO
@@ -26,16 +26,16 @@ class CustomUserNameAuthenticationFilter(
 	override fun attemptAuthentication(request: HttpServletRequest?, response: HttpServletResponse?): Authentication {
 		log.info {"login 요청 옴"}
 
-		lateinit var loginDto : MemberSaveReq
+		lateinit var loginDto : LoginReq
 
 		try{
-			loginDto = om.readValue(request?.inputStream, MemberSaveReq::class.java)
+			loginDto = om.readValue(request?.inputStream, LoginReq::class.java)
 			log.info { "login Dto : $loginDto" }
 		}catch (e:Exception){
 			log.error { "loginFilter : 로그인 요청 Dto 생성 중 실패. $e" }
 		}
 
-		val autheticationToken = UsernamePasswordAuthenticationToken(loginDto.email, loginDto.rawpassword)
+		val autheticationToken = UsernamePasswordAuthenticationToken(loginDto.email, loginDto.password)
 
 		return this.authenticationManager.authenticate(autheticationToken)
 	}

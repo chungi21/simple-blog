@@ -10,7 +10,8 @@ import java.nio.file.AccessDeniedException
 
 @Service
 class PostService(
-    private val postRepository : PostRepository
+    private val postRepository : PostRepository,
+    private val memberRepository: MemberRepository
 ) {
 
     @Transactional(readOnly = true)
@@ -42,6 +43,16 @@ class PostService(
     fun findPostById(id : Long) : PostRes {
         return postRepository.findById(id).orElseThrow().toDTO()
     }
+
+    @Transactional(readOnly = true)
+    fun findPostsByEmail(email: String, pageable: Pageable): Page<PostRes> {
+        val member = memberRepository.findMemberByEmail(email)
+            ?: throw IllegalArgumentException("해당 이메일의 회원을 찾을 수 없습니다: $email")
+
+        val posts = postRepository.findByMember(member, pageable)
+        return posts.map { it.toDTO() }
+    }
+
 
     @Transactional
     fun updatePost(postId: Long, dto: PostUpdateReq, member: Member): PostRes {

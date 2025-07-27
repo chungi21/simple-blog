@@ -17,10 +17,19 @@ class PostController(
     private val postService: PostService
 ) {
 
-    // 게시글 목록 조회
+    // 게시글 목록 조회(전체)
     @GetMapping("/posts")
     fun findPosts(@PageableDefault(size = 10) pageable: Pageable) : CmResDTO<*> {
         return CmResDTO(HttpStatus.OK, "find posts", postService.findFposts(pageable))
+    }
+
+    // 게시글 목록 조회(회원별)
+    @GetMapping("/posts/email/{email}")
+    fun findPostsByMemberEmail(
+        @PathVariable email: String,
+        @PageableDefault(size = 10) pageable: Pageable
+    ): CmResDTO<*> {
+        return CmResDTO(HttpStatus.OK, "find posts by email", postService.findPostsByEmail(email, pageable))
     }
 
     // 게시글 상세 조회

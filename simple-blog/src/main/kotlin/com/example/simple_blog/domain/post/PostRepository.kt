@@ -13,19 +13,22 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.support.PageableExecutionUtils
 
 interface PostRepository : JpaRepository<Post, Long>, PostCustomRepository {
-
+    // 네이티브 방식 (필요할 시 사용 가능)
+    fun findByMember(member: Member, pageable: Pageable): Page<Post>
 }
 
-interface PostCustomRepository{
+interface PostCustomRepository {
     fun findPosts(pageable: Pageable): Page<Post>
+    fun findPostsByMember(member: Member, pageable: Pageable): Page<Post>
 }
 
 class PostCustomRepositoryImpl(
     private val queryFactory: SpringDataQueryFactory
 ) : PostCustomRepository {
 
+    // 전체 조회
     override fun findPosts(pageable: Pageable): Page<Post> {
-        val results =  queryFactory.listQuery<Post>{
+        val results = queryFactory.listQuery<Post> {
             select(entity(Post::class))
             from(entity(Post::class))
             fetch(Post::member)
@@ -39,9 +42,31 @@ class PostCustomRepositoryImpl(
             from(entity(Post::class))
         }
 
-        return  PageableExecutionUtils.getPage(results, pageable){
+        return PageableExecutionUtils.getPage(results, pageable) {
             countQuery.size.toLong()
         }
     }
 
+    // 특정 멤버의 글만 조회
+    override fun findPostsByMember(member: Member, pageable: Pageable): Page<Post> {
+        val results = queryFactory.listQuery<Post> {
+            select(entity(Post::class))
+            from(entity(Post::class))
+            fetch(Post::member, JoinType.INNER)
+            where(column(Post::member).equal(member))
+            limit(pageable.pageSize)
+            offset(pageable.offset.toInt())
+            orderBy(ExpressionOrderSpec(column(Post::id), false))
+        }
+
+        val countQuery = queryFactory.listQuery<Post> {
+            select(entity(Post::class))
+            from(entity(Post::class))
+            where(column(Post::member).equal(member))
+        }
+
+        return PageableExecutionUtils.getPage(results, pageable) {
+            countQuery.size.toLong()
+        }
+    }
 }
