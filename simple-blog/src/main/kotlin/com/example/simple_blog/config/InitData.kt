@@ -26,7 +26,7 @@ class InitData(
 
     @EventListener(ApplicationReadyEvent::class)
     private fun init() {
-        val members = generateMembers(100)
+        val members = generateMembers(10)
         memberRepository.saveAll(members)
 
 /*        val posts = generatePosts(100)
@@ -93,11 +93,22 @@ class InitData(
         return members
     }
 
-    private fun generateMember() : Member = MemberSaveReq(
-        email = faker.internet.safeEmail(),
-        rawpassword = "1234",
-        role = Role.USER
-    ).toEntity()
+    private fun generateMember(): Member {
+        val email = faker.internet.safeEmail() // 예: simonne.howe@cummings-kertzmann.test
+
+        val nickname = run {
+            val prefix = email.substringBefore('.') // "." 앞부분 추출 → simonne
+            val randomNumber = (0..999).random()   // 0 ~ 999 랜덤 숫자
+            "$prefix$randomNumber"                 // ex: simonne347
+        }
+
+        return MemberSaveReq(
+            email = email,
+            nickname = nickname,
+            rawpassword = "1234",
+            role = Role.USER
+        ).toEntity()
+    }
 
 /*    private fun generatePosts(cnt: Int): MutableList<Post> {
         val posts = mutableListOf<Post>()

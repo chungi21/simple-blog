@@ -24,19 +24,25 @@ class MemberController(private val memberService: MemberService) {
         return memberService.findAll()
     }
 */
+    // 전체 회원 리스트
     @GetMapping("/members")
     fun findAll(@PageableDefault(size = 10) pageable: Pageable) : CmResDTO<*> {
         return CmResDTO(HttpStatus.OK, "find All Members", memberService.findAll(pageable))
     }
 
+    // 회원 조회(id로 조회)
     @GetMapping("/member/{id}")
     fun findById(@PathVariable id : Long): CmResDTO<Any> {
         return CmResDTO(HttpStatus.OK, "find Member by id", memberService.findMemberById(id))
     }
 
+    // 회원 삭제
     @DeleteMapping("/member/{id}")
     fun deleteById(@PathVariable id : Long): CmResDTO<Any> {
         return CmResDTO(HttpStatus.OK, "delete Member by id", memberService.deleteMember(id))
     }
 
+    // 회원 가입
+
+    // 회원 정보 수정
 }

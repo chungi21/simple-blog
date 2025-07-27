@@ -11,16 +11,20 @@ import java.time.LocalDateTime
 data class MemberSaveReq(
 
     @field:NotNull(message = "require email")
-    val email : String?,
+    val email : String,
+
+    @field:NotNull(message = "require email")
+    val nickname : String,
 
     @JsonProperty("password")
-    val rawpassword : String?,
+    val rawpassword : String,
     val role : Role?
 ){
     fun toEntity() : Member{
         return Member(
             email = this.email ?: "",
             password = encodeRawPassword() ?: "",
+            nickname = this.nickname,
             role = this.role ?: Role.USER
         )
     }
@@ -36,6 +40,7 @@ data class MemberRes(
     var id : Long,
     val email : String,
     val password : String,
+    val nickname : String,
     val role : Role,
     val createdAt: LocalDateTime,
     val updateAt: LocalDateTime
