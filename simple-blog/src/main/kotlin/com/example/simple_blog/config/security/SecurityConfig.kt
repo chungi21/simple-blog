@@ -211,7 +211,7 @@ class SecurityConfig(
     fun corsConfig(): CorsConfigurationSource {
         val config = CorsConfiguration()
         config.allowCredentials = true
-        config.addAllowedOriginPattern("*")
+        config.addAllowedOriginPattern("http://localhost:3000")
         config.addAllowedMethod("*")
         config.addAllowedHeader("*")
         config.addExposedHeader("authorization")
