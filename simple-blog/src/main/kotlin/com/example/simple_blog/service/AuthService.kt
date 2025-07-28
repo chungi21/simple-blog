@@ -7,6 +7,7 @@ import com.example.simple_blog.domain.member.MemberSaveReq
 import mu.KotlinLogging
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,7 +21,8 @@ class AuthService(
 
 	override fun loadUserByUsername(email: String): UserDetails {
 		log.info { "loadUserByUsername 호출" }
-		val member = memberRepository.findMemberByEmail(email)
+		val member = memberRepository.findMemberByEmailOrNull(email)
+			?: throw UsernameNotFoundException("email does not exist : $email")
 		return PrincipalDetails(member)
 	}
 

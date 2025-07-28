@@ -10,9 +10,6 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class MemberService(private val memberRepository: MemberRepository) {
 
-    /*@Transactional
-    fun findAll() : MutableList<Member> = memberRepository.findAll()*/
-
     @Transactional(readOnly = true)
     fun findAll(pageable : Pageable) : Page<MemberRes> =
         memberRepository.findMembers(pageable).map{
@@ -30,6 +27,24 @@ class MemberService(private val memberRepository: MemberRepository) {
             .orElseThrow{
                 throw MemberNotFoundException(id.toString())
             }.toDTO()
+    }
+
+    @Transactional
+    fun join(dto: MemberSaveReq): Member {
+        // email 중복 체크
+        val checkEmail = memberRepository.findMemberByEmailOrNull(dto.email)
+        if (checkEmail != null) {
+            throw IllegalArgumentException("email in use")
+        }
+
+        // 닉네임 중복 체크
+        val checkNickname = memberRepository.findMemberByNicknameOrNull(dto.nickname)
+        if (checkNickname != null) {
+            throw IllegalArgumentException("nickname in use")
+        }
+
+        val member = dto.toEntity()
+        return memberRepository.save(member)
     }
 
 }

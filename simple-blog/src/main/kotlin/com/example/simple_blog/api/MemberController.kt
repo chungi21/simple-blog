@@ -20,12 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
 @RestController
 class MemberController(private val memberService: MemberService) {
-/*
-    @GetMapping("/members")
-    fun findAll() : MutableList<Member>{
-        return memberService.findAll()
-    }
-*/
+
     // 전체 회원 리스트
     @GetMapping("/members")
     fun findAll(@PageableDefault(size = 10) pageable: Pageable) : CmResDTO<*> {
@@ -45,6 +40,11 @@ class MemberController(private val memberService: MemberService) {
     }
 
     // 회원 가입
+    @PostMapping("/member/join")
+    fun signUp(@RequestBody @Valid dto: MemberSaveReq): CmResDTO<Any> {
+        val savedMember = memberService.join(dto)
+        return CmResDTO(HttpStatus.CREATED, "member join", savedMember.toDTO())
+    }
 
     // 회원 가입 Form
 
@@ -53,7 +53,6 @@ class MemberController(private val memberService: MemberService) {
     // 회원 정보 수정 Form
     @GetMapping("/members/me")
     fun getCurrentMember(@AuthenticationPrincipal principal: PrincipalDetails?): CmResDTO<out Any?> {
-        System.out.println("members/me !!")
         return if (principal != null) {
             val member = principal.member
             val memberInfo = member.toDTO()

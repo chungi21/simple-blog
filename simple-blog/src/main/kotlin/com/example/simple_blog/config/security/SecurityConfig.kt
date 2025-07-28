@@ -70,7 +70,7 @@ class SecurityConfig(
         // 인가 설정
         http.authorizeHttpRequests {
             it
-                .requestMatchers("/login", "/logout").permitAll()
+                .requestMatchers("/login", "/logout", "/api/member/join").permitAll()
                 .requestMatchers("/api/members/me").authenticated()
                 .requestMatchers("/api/members/**").hasRole("USER")
                 .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/*").permitAll()

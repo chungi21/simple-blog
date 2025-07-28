@@ -72,11 +72,6 @@ class CustomBasicAuthenticationFilter(
 		}
 
 		val member = memberRepository.findMemberByEmail(email)
-		if (member == null) {
-			log.error { "이메일에 해당하는 사용자 없음: $email" }
-			chain.doFilter(request, response)
-			return
-		}
 
 		// 5. 인증객체 생성 및 SecurityContext에 저장
 		val principalDetails = PrincipalDetails(member)
