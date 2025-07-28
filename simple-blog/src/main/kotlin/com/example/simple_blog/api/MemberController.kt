@@ -1,5 +1,6 @@
 package com.example.simple_blog.api
 
+import com.example.simple_blog.config.security.PrincipalDetails
 import com.example.simple_blog.domain.member.MemberSaveReq
 import com.example.simple_blog.service.MemberService
 import com.example.simple_blog.util.value.CmResDTO
@@ -7,6 +8,7 @@ import jakarta.validation.Valid
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -44,5 +46,40 @@ class MemberController(private val memberService: MemberService) {
 
     // 회원 가입
 
+    // 회원 가입 Form
+
     // 회원 정보 수정
+
+    // 회원 정보 수정 Form
+    @GetMapping("/members/me")
+    fun getCurrentMember(@AuthenticationPrincipal principal: PrincipalDetails?): CmResDTO<out Any?> {
+        System.out.println("members/me !!")
+        return if (principal != null) {
+            val member = principal.member
+            val memberInfo = member.toDTO()
+            System.out.println("memberInfo : " + memberInfo)
+            CmResDTO(HttpStatus.OK, "now login info", memberInfo)
+        } else {
+            CmResDTO(HttpStatus.UNAUTHORIZED, "login no info ", null)
+        }
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

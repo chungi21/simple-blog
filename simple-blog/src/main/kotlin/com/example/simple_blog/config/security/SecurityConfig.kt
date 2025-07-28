@@ -43,10 +43,12 @@ class SecurityConfig(
 
     private val log = KotlinLogging.logger {}
 
+
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { it.disable() }
+            .cors { }
             .headers { it.frameOptions { frame -> frame.disable() } }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
@@ -68,18 +70,14 @@ class SecurityConfig(
         // 인가 설정
         http.authorizeHttpRequests {
             it
-                // 로그인 및 로그아웃은 모두 접근 허용
                 .requestMatchers("/login", "/logout").permitAll()
-
-                // 회원 API는 USER 권한만
-                .requestMatchers("/api/members").hasRole("USER")
-
+                .requestMatchers("/api/members/me").authenticated()
+                .requestMatchers("/api/members/**").hasRole("USER")
                 .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/*").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/posts/new", "/api/posts/*/edit").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/posts").hasRole("USER")
                 .requestMatchers(HttpMethod.PUT, "/api/posts/*").hasRole("USER")
                 .requestMatchers(HttpMethod.DELETE, "/api/posts/*").hasRole("USER")
-                // 그 외는 모두 허용
                 .anyRequest().permitAll()
         }
 
@@ -89,6 +87,8 @@ class SecurityConfig(
 
         return http.build()
     }
+
+
 
     class CustomLogoutSuccessHandler(
         private val om:ObjectMapper
