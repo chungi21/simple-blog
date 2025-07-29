@@ -42,6 +42,14 @@ data class LoginReq(
     val password: String
 )
 
+// 회원 정보 수정용
+data class MemberUpdateReq(
+    val nickname: String,
+    @JsonProperty("password")
+    val rawpassword: String = ""
+)
+
+
 data class MemberRes(
     var id : Long,
     val email : String,

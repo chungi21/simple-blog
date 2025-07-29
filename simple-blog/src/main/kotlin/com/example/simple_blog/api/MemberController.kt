@@ -1,7 +1,9 @@
 package com.example.simple_blog.api
 
 import com.example.simple_blog.config.security.PrincipalDetails
+import com.example.simple_blog.domain.member.MemberRes
 import com.example.simple_blog.domain.member.MemberSaveReq
+import com.example.simple_blog.domain.member.MemberUpdateReq
 import com.example.simple_blog.service.MemberService
 import com.example.simple_blog.util.value.CmResDTO
 import jakarta.validation.Valid
@@ -9,13 +11,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/api")
 @RestController
@@ -54,6 +50,15 @@ class MemberController(private val memberService: MemberService) {
     }
 
     // 회원 정보 수정
+    @PutMapping("/member/me")
+    fun updateMyInfo(
+        @AuthenticationPrincipal user: PrincipalDetails,
+        @RequestBody dto: MemberUpdateReq
+    ): CmResDTO<Any> {
+        val updatedMember = memberService.update(user.member.id!!, dto)
+        return CmResDTO(HttpStatus.OK, "member updated", updatedMember.toDTO())
+    }
+
 
     // 회원 정보 수정 Form
     @GetMapping("/members/me")

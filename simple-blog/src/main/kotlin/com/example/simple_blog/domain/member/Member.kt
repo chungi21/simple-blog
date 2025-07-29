@@ -47,6 +47,14 @@ class Member(email:String, password:String, nickname:String, role:Role) : Auditi
         }
     }
 
+    fun changeNickname(newNickname: String) {
+        this.nickname = newNickname
+    }
+
+    fun changePassword(encodedPassword: String) {
+        this.password = encodedPassword
+    }
+
 }
 
 enum class Role {
