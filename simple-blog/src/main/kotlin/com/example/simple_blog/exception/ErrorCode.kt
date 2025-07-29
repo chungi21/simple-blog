@@ -8,5 +8,8 @@ enum class ErrorCode(
     val message:String
 ) {
     INVALID_INPUT_VALUE("COO1","invalid input value"),
-    ENTITY_NOT_FOUND("COO2","Entity not found")
+    ENTITY_NOT_FOUND("COO2","Entity not found"),
+
+    EMAIL_ALREADY_EXISTS("M001", "Email in use"),
+    NICKNAME_ALREADY_EXISTS("M002", "Nickname in use")
 }

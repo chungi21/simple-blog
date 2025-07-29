@@ -47,6 +47,11 @@ class MemberController(private val memberService: MemberService) {
     }
 
     // 회원 가입 Form
+    @GetMapping("/member/join")
+    fun joinForm(): CmResDTO<Any> {
+        val defaultValues = mapOf("defaultRole" to "USER")
+        return CmResDTO(HttpStatus.OK, "join form", defaultValues)
+    }
 
     // 회원 정보 수정
 
@@ -56,7 +61,6 @@ class MemberController(private val memberService: MemberService) {
         return if (principal != null) {
             val member = principal.member
             val memberInfo = member.toDTO()
-            System.out.println("memberInfo : " + memberInfo)
             CmResDTO(HttpStatus.OK, "now login info", memberInfo)
         } else {
             CmResDTO(HttpStatus.UNAUTHORIZED, "login no info ", null)

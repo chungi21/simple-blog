@@ -2,6 +2,8 @@ package com.example.simple_blog.service
 
 import com.example.simple_blog.domain.member.*
 import com.example.simple_blog.exception.MemberNotFoundException
+import com.example.simple_blog.exception.MemberAlreadyExistsException
+import com.example.simple_blog.exception.NicknameAlreadyExistsException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -31,16 +33,14 @@ class MemberService(private val memberRepository: MemberRepository) {
 
     @Transactional
     fun join(dto: MemberSaveReq): Member {
-        // email 중복 체크
         val checkEmail = memberRepository.findMemberByEmailOrNull(dto.email)
         if (checkEmail != null) {
-            throw IllegalArgumentException("email in use")
+            throw MemberAlreadyExistsException(dto.email)
         }
 
-        // 닉네임 중복 체크
         val checkNickname = memberRepository.findMemberByNicknameOrNull(dto.nickname)
         if (checkNickname != null) {
-            throw IllegalArgumentException("nickname in use")
+            throw NicknameAlreadyExistsException(dto.nickname)
         }
 
         val member = dto.toEntity()
