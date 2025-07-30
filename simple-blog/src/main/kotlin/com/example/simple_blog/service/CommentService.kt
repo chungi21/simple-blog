@@ -70,4 +70,16 @@ class CommentService(
 		)
 	}
 
+	@Transactional
+	fun delete(memberId: Long, commentId: Long) {
+		val comment = commentRepository.findById(commentId)
+			.orElseThrow { EntityNotFoundException("Comment not found") }
+
+		if (comment.member.id != memberId) {
+			throw BusinessException(ErrorCode.HANDLE_ACCESS_DENIED)
+		}
+
+		commentRepository.delete(comment)
+	}
+
 }

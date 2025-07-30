@@ -33,7 +33,7 @@ class CommentController(
 		return CmResDTO(HttpStatus.OK, "comments fetched", comments)
 	}
 
-	// 댓글 수정 API
+	// 댓글 수정
 	@PutMapping("/comments/{id}")
 	fun updateComment(
 		@PathVariable id: Long,
@@ -42,6 +42,16 @@ class CommentController(
 	): CmResDTO<Any> {
 		val updated = commentService.update(user.member.id!!, id, req)
 		return CmResDTO(HttpStatus.OK, "comment updated", updated)
+	}
+
+	// 댓글 삭제
+	@DeleteMapping("/comments/{id}")
+	fun deleteComment(
+		@PathVariable id: Long,
+		@AuthenticationPrincipal user: PrincipalDetails
+	): CmResDTO<HttpStatus?> {
+		commentService.delete(user.member.id!!, id)
+		return CmResDTO(HttpStatus.NO_CONTENT, "comment deleted", null)
 	}
 
 }
