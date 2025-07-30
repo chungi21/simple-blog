@@ -1,9 +1,6 @@
 package com.example.simple_blog.service
 
-import com.example.simple_blog.domain.comment.Comment
-import com.example.simple_blog.domain.comment.CommentRepository
-import com.example.simple_blog.domain.comment.CommentRes
-import com.example.simple_blog.domain.comment.CommentSaveReq
+import com.example.simple_blog.domain.comment.*
 import com.example.simple_blog.domain.member.MemberRepository
 import com.example.simple_blog.domain.post.PostRepository
 import com.example.simple_blog.exception.EntityNotFoundException
@@ -34,4 +31,22 @@ class CommentService(
 			writerNickname = saved.member.nickname
 		)
 	}
+
+	@Transactional(readOnly = true)
+	fun findByPostId(postId: Long): List<CommentResList> {
+		val post = postRepository.findById(postId)
+			.orElseThrow { EntityNotFoundException("Post not found") }
+
+		val comments = commentRepository.findAllByPost(post)
+
+		return comments.map {
+			CommentResList(
+				id = it.id!!,
+				content = it.content,
+				writerNickname = it.member.nickname,
+				writerId = it.member.id!!
+			)
+		}
+	}
+
 }

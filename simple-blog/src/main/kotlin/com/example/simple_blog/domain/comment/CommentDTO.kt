@@ -10,3 +10,10 @@ data class CommentRes(
 	val content: String,
 	val writerNickname: String
 )
+
+data class CommentResList(
+	val id: Long,
+	val content: String,
+	val writerNickname: String,
+	val writerId: Long
+)
