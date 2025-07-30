@@ -5,15 +5,19 @@ data class CommentSaveReq(
 	val content: String
 )
 
-data class CommentRes(
+data class CommentCreateRes(
 	val id: Long,
 	val content: String,
 	val writerNickname: String
 )
 
-data class CommentResList(
+data class CommentRes(
 	val id: Long,
 	val content: String,
 	val writerNickname: String,
 	val writerId: Long
+)
+
+data class CommentUpdateReq(
+	val content: String
 )
