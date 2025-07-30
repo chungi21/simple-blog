@@ -7,14 +7,27 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "Comment")
-class Comment(title : String, content : String, post : Post) : AuditingEntity() {
+class Comment(
+    content: String,
+    post: Post,
+    member: Member
+) : AuditingEntity() {
 
     @Column(name = "content", nullable = false)
-    var content : String = content
+    var content: String = content
         protected set
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Member::class)
-    var post : Post = post
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    var post: Post = post
         protected set
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    var member: Member = member
+        protected set
+
+    fun updateContent(newContent: String) {
+        this.content = newContent
+    }
 }
