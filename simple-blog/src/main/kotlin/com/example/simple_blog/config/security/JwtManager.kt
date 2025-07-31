@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 
 @Component
 class JwtManager(
-    accessTokenExpireSecond : Long = 600,
+    accessTokenExpireSecond : Long = 30,
     refreshTokenExpireDay : Long = 7
 ) {
 
