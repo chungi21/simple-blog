@@ -6,9 +6,11 @@ import com.auth0.jwt.exceptions.JWTVerificationException
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.auth0.jwt.interfaces.JWTVerifier
 import mu.KotlinLogging
+import org.springframework.stereotype.Component
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+@Component
 class JwtManager(
     accessTokenExpireSecond : Long = 600,
     refreshTokenExpireDay : Long = 7
@@ -20,7 +22,6 @@ class JwtManager(
     private val refreshSecretKey : String = "myRefreshSecretKey"
 
     private val claimEmail = "email"
-    private val claimPassword = "password"
     private val claimPrincipal = "principal"
     private val accessTokenExpireSecond : Long = accessTokenExpireSecond
     val refreshTokenExpireDay : Long = refreshTokenExpireDay
@@ -43,11 +44,6 @@ class JwtManager(
         return doGenerateToken(expireDate, principal, refreshSecretKey)
     }
 
-/*    fun generateAccessToken(principal: String) : String {
-        val expireDate = Date(System.nanoTime() + TimeUnit.SECONDS.toMillis(accessTokenExpireSecond))
-        return doGenerateToken(expireDate, principal, accessSecretKey)
-    }*/
-
     fun generateAccessToken(principal: String): String {
         val expireDate = Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(accessTokenExpireSecond))
 
@@ -58,25 +54,21 @@ class JwtManager(
             .sign(Algorithm.HMAC512(accessSecretKey))
     }
 
-
     fun getMemberEmail(token : String) : String? {
         return JWT.require(Algorithm.HMAC512(accessSecretKey)).build().verify(token)
             .getClaim(claimEmail).asString()
     }
 
-    fun getPrincipalStringByAccessToken(accessToken : String) : String {
-        val decodedJWT = getDecodeJwt(secretKey= accessSecretKey, token = accessToken)
-        return decodedJWT.getClaim(claimPrincipal).asString()
-    }
-
     fun getPrincipalStringByRefreshToken(refreshToken : String) : String {
+        System.out.println("refreshToken!! : "+ refreshToken)
         val decodedJWT = getDecodeJwt(secretKey= refreshSecretKey, token = refreshToken)
+        System.out.println("decodedJWT!! : "+ decodedJWT)
+        System.out.println("claimPrincipal!! : "+ claimPrincipal)
         return decodedJWT.getClaim(claimPrincipal).asString()
     }
-
 
     private fun getDecodeJwt(secretKey : String, token : String) : DecodedJWT {
-        val verifier: JWTVerifier = JWT.require(Algorithm.HMAC512(accessSecretKey))
+        val verifier: JWTVerifier = JWT.require(Algorithm.HMAC512(secretKey))
             .build()
         val decodedJWT : DecodedJWT = verifier.verify(token)
         return decodedJWT
@@ -106,20 +98,3 @@ sealed class TokenValidResult {
     class Success(val successValue : Boolean = true) : TokenValidResult()
     class Failure(val exception : JWTVerificationException) : TokenValidResult()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
