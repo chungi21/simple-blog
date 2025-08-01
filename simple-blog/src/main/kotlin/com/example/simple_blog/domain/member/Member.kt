@@ -35,6 +35,10 @@ class Member(email:String, password:String, nickname:String, role:Role) : Auditi
         )
     }
 
+    fun toNicknameDTO(): MemberNicknameRes {
+        return MemberNicknameRes(nickname = this.nickname)
+    }
+
     override fun toString() : String {
         return "Member(id=$id, email='$email', password='$password', role='$role', createdAt='$createAt')"
     }

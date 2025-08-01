@@ -74,5 +74,11 @@ class MemberService(
         return member
     }
 
+    @Transactional(readOnly = true)
+    fun findByEmail(email: String): MemberNicknameRes {
+        return memberRepository.findMemberByEmailOrNull(email)
+            ?.toNicknameDTO()
+            ?: throw MemberNotFoundException(email)
+    }
 
 }

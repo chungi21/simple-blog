@@ -59,3 +59,7 @@ data class MemberRes(
     val createdAt: LocalDateTime,
     val updateAt: LocalDateTime
 )
+
+data class MemberNicknameRes(
+    val nickname: String
+)

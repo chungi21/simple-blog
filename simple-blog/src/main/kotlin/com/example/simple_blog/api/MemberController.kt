@@ -7,7 +7,9 @@ import com.example.simple_blog.domain.member.MemberUpdateReq
 import com.example.simple_blog.service.MemberService
 import com.example.simple_blog.util.value.CmResDTO
 import jakarta.validation.Valid
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -21,6 +23,13 @@ class MemberController(private val memberService: MemberService) {
     @GetMapping("/members")
     fun findAll(@PageableDefault(size = 10) pageable: Pageable) : CmResDTO<*> {
         return CmResDTO(HttpStatus.OK, "find All Members", memberService.findAll(pageable))
+    }
+
+    // 최근 가입한 10명 보여주기(메인에 사용)
+    @GetMapping("/members/recent")
+    fun findRecentMembers(): CmResDTO<*> {
+        val pageable: Pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"))
+        return CmResDTO(HttpStatus.OK, "Recent 10 members", memberService.findAll(pageable))
     }
 
     // 회원 조회(id로 조회)
@@ -72,22 +81,10 @@ class MemberController(private val memberService: MemberService) {
         }
     }
 
+    // 회원블로그 상단 배너에 사용
+    @GetMapping("/member/email/{email}")
+    fun searchNicknameFindByEmail(@PathVariable email: String): CmResDTO<Any> {
+        return CmResDTO(HttpStatus.OK, "Nickname by email ", memberService.findByEmail(email))
+    }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

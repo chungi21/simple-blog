@@ -71,6 +71,8 @@ class SecurityConfig(
         http.authorizeHttpRequests {
             it
                 .requestMatchers("/login", "/logout", "/api/member/join").permitAll()
+                .requestMatchers("/api/member/email/**").permitAll()
+                .requestMatchers("/api/members/recent").permitAll()
                 .requestMatchers("/api/members/me").authenticated()
                 .requestMatchers("/api/members/**").hasRole("USER")
                 .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/*").permitAll()
@@ -80,6 +82,7 @@ class SecurityConfig(
                 .requestMatchers(HttpMethod.DELETE, "/api/posts/*").hasRole("USER")
                 .anyRequest().permitAll()
         }
+
 
         http.logout {
             it.logoutUrl("/logout").logoutSuccessHandler(CustomLogoutSuccessHandler(objectMapper))  // GET 요청이 아니라 POST 요청이어야 로그아웃 됨
