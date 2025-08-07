@@ -48,4 +48,18 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
     }
 
+    @ExceptionHandler(AccessDeniedCustomException::class)
+    fun handleAccessDenied(e: AccessDeniedCustomException): ResponseEntity<ErrorResponse> {
+        log.error { "AccessDeniedCustomException : ${e.message}" }
+        val errorResponse = ErrorResponse.of(e.errorCode)
+        return ResponseEntity(errorResponse, HttpStatus.FORBIDDEN)
+    }
+
+    @ExceptionHandler(InvalidRequestException::class)
+    fun handleInvalidRequestException(e: InvalidRequestException): ResponseEntity<ErrorResponse> {
+        log.error { "InvalidRequestException : ${e.message}" }
+        val errorResponse = ErrorResponse.of(ErrorCode.ENTITY_NOT_FOUND)
+        return ResponseEntity(errorResponse, HttpStatus.NOT_FOUND)
+    }
+
 }

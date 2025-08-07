@@ -21,7 +21,7 @@ class PostController(
     // 게시글 목록 조회(전체)
     @GetMapping("")
     fun findPosts(@PageableDefault(size = 10) pageable: Pageable) : CmResDTO<*> {
-        return CmResDTO(HttpStatus.OK, "find posts", postService.findFposts(pageable))
+        return CmResDTO(HttpStatus.OK, "find posts", postService.findPosts(pageable))
     }
 
     // 게시글 목록 조회(회원별)
@@ -41,8 +41,13 @@ class PostController(
 
     // 게시글 삭제
     @DeleteMapping("/{postId}")
-    fun deleteById(@PathVariable postId : Long): CmResDTO<Any> {
-        return CmResDTO(HttpStatus.OK, "delete post by id", postService.deletePost(postId))
+    fun deleteById(
+        @PathVariable postId : Long,
+        @AuthenticationPrincipal principal: PrincipalDetails?
+    ): CmResDTO<Any> {
+        principal ?: throw UnauthorizedException()
+        val member = principal.member
+        return CmResDTO(HttpStatus.OK, "delete post by id", postService.deletePost(postId, member))
     }
 
     // 게시글 작성
@@ -69,18 +74,20 @@ class PostController(
     fun updatePost(
         @PathVariable postId: Long,
         @RequestBody dto: PostUpdateReq,
-        @AuthenticationPrincipal principal: PrincipalDetails
+        @AuthenticationPrincipal principal: PrincipalDetails?
     ): CmResDTO<*> {
+        principal ?: throw UnauthorizedException()
         val member = principal.member
         return CmResDTO(HttpStatus.OK, "update post", postService.updatePost(postId, dto, member))
     }
 
     // 게시글 수정 Form (화면 요청)
-    @GetMapping("/{postId}/edit")
+    @GetMapping("/{postId}/form")
     fun editForm(
         @PathVariable postId: Long,
-        @AuthenticationPrincipal principal: PrincipalDetails
+        @AuthenticationPrincipal principal: PrincipalDetails?
     ): CmResDTO<*> {
+        principal ?: throw UnauthorizedException()
         val member = principal.member
         val response = postService.getPostForEdit(postId, member)
         return CmResDTO(HttpStatus.OK, "edit form", response)

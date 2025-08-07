@@ -2,11 +2,12 @@ package com.example.simple_blog.service
 
 import com.example.simple_blog.domain.member.*
 import com.example.simple_blog.domain.post.*
+import com.example.simple_blog.exception.AccessDeniedCustomException
+import com.example.simple_blog.exception.InvalidRequestException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.nio.file.AccessDeniedException
 
 @Service
 class PostService(
@@ -15,13 +16,8 @@ class PostService(
 ) {
 
     @Transactional(readOnly = true)
-    fun findFposts(pageable: Pageable) : Page<PostRes> {
+    fun findPosts(pageable: Pageable) : Page<PostRes> {
         return postRepository.findPosts(pageable).map { it.toDTO()}
-    }
-
-    @Transactional
-    fun save(dto : PostSaveReq): PostRes {
-        return postRepository.save(dto.toEntity()).toDTO()
     }
 
     @Transactional
@@ -37,6 +33,19 @@ class PostService(
     @Transactional
     fun deletePost(id : Long){
         return postRepository.deleteById(id)
+    }
+
+    @Transactional
+    fun deletePost(postId : Long, member: Member){
+        val post = postRepository.findById(postId).orElseThrow {
+            throw InvalidRequestException("post does not exist.")
+        }
+
+        if (post.member.id != member.id) {
+            throw AccessDeniedCustomException("no permission.")
+        }
+
+        return postRepository.deleteById(postId)
     }
 
     @Transactional(readOnly = true)
@@ -57,25 +66,26 @@ class PostService(
     @Transactional
     fun updatePost(postId: Long, dto: PostUpdateReq, member: Member): PostRes {
         val post = postRepository.findById(postId).orElseThrow {
-            throw IllegalArgumentException("게시글이 존재하지 않습니다.")
+            throw InvalidRequestException("post does not exist.")
         }
 
         if (post.member.id != member.id) {
-            throw AccessDeniedException("수정 권한이 없습니다.")
+            throw AccessDeniedCustomException("no permission.")
         }
 
         post.update(dto.title, dto.content)
 
-        return post.toDTO() // 변경감지로 저장됨 (save() 호출 불필요)
+        return post.toDTO()
     }
 
     @Transactional(readOnly = true)
     fun getPostForEdit(postId: Long, member: Member): PostEditRes {
-        val post = postRepository.findById(postId)
-            .orElseThrow { IllegalArgumentException("해당 게시글이 존재하지 않습니다.") }
+        val post = postRepository.findById(postId).orElseThrow {
+            throw InvalidRequestException("post does not exist.")
+        }
 
         if (post.member.id != member.id) {
-            throw AccessDeniedException("수정 권한이 없습니다.")
+            throw AccessDeniedCustomException("no permission.")
         }
 
         return PostEditRes(
