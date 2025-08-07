@@ -49,8 +49,9 @@ class PostController(
     @PostMapping("")
     fun save(
         @RequestBody dto: PostSaveReq,
-        @AuthenticationPrincipal principal: PrincipalDetails
+        @AuthenticationPrincipal principal: PrincipalDetails?
     ): CmResDTO<*> {
+        principal ?: throw UnauthorizedException()
         val member = principal.member
         return CmResDTO(HttpStatus.OK, "save post", postService.save(dto, member))
     }
