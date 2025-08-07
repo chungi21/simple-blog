@@ -16,4 +16,6 @@ enum class ErrorCode(
     HANDLE_ACCESS_DENIED("A001", "No Reissue success"),
 
     INVALID_REFRESH_TOKEN("T001", "Invalid refresh token"),
+
+    UNAUTHORIZED("A001", "Unauthorized access"),
 }

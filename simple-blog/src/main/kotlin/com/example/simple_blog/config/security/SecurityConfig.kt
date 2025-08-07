@@ -76,7 +76,7 @@ class SecurityConfig(
                 .requestMatchers("/api/members/me").authenticated()
                 .requestMatchers("/api/members/**").hasRole("USER")
                 .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/*").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/posts/new", "/api/posts/*/edit").hasRole("USER")
+                .requestMatchers(HttpMethod.GET, "/api/posts/form", "/api/posts/*/edit").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/posts").hasRole("USER")
                 .requestMatchers(HttpMethod.PUT, "/api/posts/*").hasRole("USER")
                 .requestMatchers(HttpMethod.DELETE, "/api/posts/*").hasRole("USER")

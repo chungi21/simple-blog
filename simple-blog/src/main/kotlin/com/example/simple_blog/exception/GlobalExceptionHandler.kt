@@ -41,4 +41,11 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler(UnauthorizedException::class)
+    fun handleUnauthorizedException(e: UnauthorizedException): ResponseEntity<ErrorResponse> {
+        log.error { "UnauthorizedException : ${e.message}" }
+        val errorResponse = ErrorResponse.of(ErrorCode.UNAUTHORIZED)
+        return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
+    }
+
 }
