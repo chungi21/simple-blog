@@ -4,6 +4,7 @@ import com.example.simple_blog.config.security.PrincipalDetails
 import com.example.simple_blog.domain.comment.CommentRes
 import com.example.simple_blog.domain.comment.CommentSaveReq
 import com.example.simple_blog.domain.comment.CommentUpdateReq
+import com.example.simple_blog.exception.UnauthorizedException
 import com.example.simple_blog.service.CommentService
 import com.example.simple_blog.util.value.CmResDTO
 import org.springframework.http.HttpStatus
@@ -17,40 +18,43 @@ class CommentController(
 ) {
 
 	// 댓글 쓰기
-	@PostMapping("/comments")
+	@PostMapping("/posts/{postId}/comments")
 	fun writeComment(
 		@RequestBody req: CommentSaveReq,
-		@AuthenticationPrincipal user: PrincipalDetails
+		@AuthenticationPrincipal principal: PrincipalDetails?
 	): CmResDTO<Any> {
-		val result = commentService.write(user.member.id!!, req)
+		principal ?: throw UnauthorizedException()
+		val result = commentService.write(principal.member.id!!, req)
 		return CmResDTO(HttpStatus.CREATED, "comment created", result)
 	}
 
 	// 댓글 리스트
-	@GetMapping("/comments/post/{postId}")
+	@GetMapping("/post/{postId}/comments")
 	fun getCommentsByPost(@PathVariable postId: Long): CmResDTO<Any> {
 		val comments = commentService.findByPostId(postId)
 		return CmResDTO(HttpStatus.OK, "comments fetched", comments)
 	}
 
 	// 댓글 수정
-	@PutMapping("/comments/{id}")
+	@PutMapping("/comments/{commentId}")
 	fun updateComment(
-		@PathVariable id: Long,
+		@PathVariable commentId: Long,
 		@RequestBody req: CommentUpdateReq,
-		@AuthenticationPrincipal user: PrincipalDetails
+		@AuthenticationPrincipal principal: PrincipalDetails?
 	): CmResDTO<Any> {
-		val updated = commentService.update(user.member.id!!, id, req)
+		principal ?: throw UnauthorizedException()
+		val updated = commentService.update(principal.member.id!!, commentId, req)
 		return CmResDTO(HttpStatus.OK, "comment updated", updated)
 	}
 
 	// 댓글 삭제
-	@DeleteMapping("/comments/{id}")
+	@DeleteMapping("/comments/{commentId}")
 	fun deleteComment(
-		@PathVariable id: Long,
-		@AuthenticationPrincipal user: PrincipalDetails
+		@PathVariable commentId: Long,
+		@AuthenticationPrincipal principal: PrincipalDetails?
 	): CmResDTO<HttpStatus?> {
-		commentService.delete(user.member.id!!, id)
+		principal ?: throw UnauthorizedException()
+		commentService.delete(principal.member.id!!, commentId)
 		return CmResDTO(HttpStatus.NO_CONTENT, "comment deleted", null)
 	}
 
