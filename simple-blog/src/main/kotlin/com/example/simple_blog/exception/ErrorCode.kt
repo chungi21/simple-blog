@@ -1,6 +1,7 @@
 package com.example.simple_blog.exception
 
 import faker.com.fasterxml.jackson.annotation.JsonFormat
+import org.springframework.http.HttpStatus
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 enum class ErrorCode(
@@ -14,8 +15,7 @@ enum class ErrorCode(
     NICKNAME_ALREADY_EXISTS("M002", "Nickname in use"),
 
     HANDLE_ACCESS_DENIED("A001", "No Reissue success"),
+    UNAUTHORIZED("A002", "Unauthorized access"),
 
     INVALID_REFRESH_TOKEN("T001", "Invalid refresh token"),
-
-    UNAUTHORIZED("A001", "Unauthorized access"),
 }

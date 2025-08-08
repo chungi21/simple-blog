@@ -17,20 +17,18 @@ import org.springframework.web.bind.annotation.*
 class PostController(
     private val postService: PostService
 ) {
-
-    // 게시글 목록 조회(전체)
+    // 게시글 목록 조회 (전체 + 회원별)
     @GetMapping("")
-    fun findPosts(@PageableDefault(size = 10) pageable: Pageable) : CmResDTO<*> {
-        return CmResDTO(HttpStatus.OK, "find posts", postService.findPosts(pageable))
-    }
-
-    // 게시글 목록 조회(회원별)
-    @GetMapping("/email/{email}")
-    fun findPostsByMemberEmail(
-        @PathVariable email: String,
-        @PageableDefault(size = 10) pageable: Pageable
+    fun findPosts(
+        @PageableDefault(size = 10) pageable: Pageable,
+        @RequestParam(required = false) email: String?
     ): CmResDTO<*> {
-        return CmResDTO(HttpStatus.OK, "find posts by email", postService.findPostsByEmail(email, pageable))
+        val posts = if (email.isNullOrBlank()) {
+            postService.findPosts(pageable) // 전체 조회
+        } else {
+            postService.findPostsByEmail(email, pageable) // 회원별 조회
+        }
+        return CmResDTO(HttpStatus.OK, "find posts", posts)
     }
 
     // 게시글 상세 조회

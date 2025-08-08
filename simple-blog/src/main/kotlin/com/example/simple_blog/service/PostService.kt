@@ -3,6 +3,7 @@ package com.example.simple_blog.service
 import com.example.simple_blog.domain.member.*
 import com.example.simple_blog.domain.post.*
 import com.example.simple_blog.exception.AccessDeniedCustomException
+import com.example.simple_blog.exception.InvalidEmailException
 import com.example.simple_blog.exception.InvalidRequestException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -55,13 +56,13 @@ class PostService(
 
     @Transactional(readOnly = true)
     fun findPostsByEmail(email: String, pageable: Pageable): Page<PostRes> {
-        val member = memberRepository.findMemberByEmail(email)
-            ?: throw IllegalArgumentException("해당 이메일의 회원을 찾을 수 없습니다: $email")
+        val member = memberRepository.findMemberByEmailOrNull(email)
+            ?: throw InvalidEmailException(email)
 
         val posts = postRepository.findByMember(member, pageable)
+
         return posts.map { it.toDTO() }
     }
-
 
     @Transactional
     fun updatePost(postId: Long, dto: PostUpdateReq, member: Member): PostRes {

@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.dao.EmptyResultDataAccessException
+
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -24,7 +26,7 @@ class GlobalExceptionHandler {
     fun handleEntityNotFoundException(e : EntityNotFoundException): ResponseEntity<ErrorResponse> {
         log.error { "handleEntityNotFoundException : $e" }
         val of = ErrorResponse.of(ErrorCode.ENTITY_NOT_FOUND)
-        return ResponseEntity(of, HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(of, HttpStatus.NOT_FOUND)
     }
 
     @ExceptionHandler(NoResultException::class)
