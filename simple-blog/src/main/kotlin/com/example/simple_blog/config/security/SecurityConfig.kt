@@ -71,6 +71,7 @@ class SecurityConfig(
         http.authorizeHttpRequests {
             it
                 .requestMatchers("/login", "/logout", "/api/member/join").permitAll()
+                .requestMatchers("/api/members/check-email", "/api/members/check-nickname").permitAll() // ✅ 추가
                 .requestMatchers("/api/member/email/**").permitAll()
                 .requestMatchers("/api/members/recent").permitAll()
                 .requestMatchers("/api/members/me").authenticated()
@@ -83,15 +84,12 @@ class SecurityConfig(
                 .anyRequest().permitAll()
         }
 
-
         http.logout {
             it.logoutUrl("/logout").logoutSuccessHandler(CustomLogoutSuccessHandler(objectMapper))  // GET 요청이 아니라 POST 요청이어야 로그아웃 됨
         }
 
         return http.build()
     }
-
-
 
     class CustomLogoutSuccessHandler(
         private val om:ObjectMapper

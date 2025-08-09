@@ -64,4 +64,26 @@ class MemberController(private val memberService: MemberService) {
         }
     }
 
+    // email 중복 체크(회원가입에서 사용)
+    @GetMapping("/check-email")
+    fun checkEmail(@RequestParam email: String): CmResDTO<Any> {
+        val exists = memberService.isEmailExists(email)
+        if(exists != null){
+            return CmResDTO(HttpStatus.OK, "join - email check existence", mapOf("exists" to exists))
+        }else{
+            return CmResDTO(HttpStatus.OK, "join - email check success", mapOf("exists" to exists))
+        }
+    }
+
+    // nickname 중복 체크(회원가입에서 사용)
+    @GetMapping("/check-nickname")
+    fun checkNickname(@RequestParam nickname: String): CmResDTO<Any> {
+        val exists = memberService.isNicknameExists(nickname)
+        if(exists!=null){
+            return CmResDTO(HttpStatus.OK, "join - nickname check existence", mapOf("exists" to exists))
+        }else{
+            return CmResDTO(HttpStatus.OK, "join - nickname check success", mapOf("exists" to exists))
+        }
+    }
+
 }

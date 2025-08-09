@@ -63,10 +63,8 @@ class MemberService(
             throw NicknameAlreadyExistsException(dto.nickname)
         }
 
-        // 닉네임 변경
         member.changeNickname(dto.nickname)
 
-        // 비밀번호 변경
         if (dto.rawpassword.isNotBlank()) {
             member.changePassword(passwordEncoder.encode(dto.rawpassword))
         }
@@ -79,6 +77,16 @@ class MemberService(
         return memberRepository.findMemberByEmailOrNull(email)
             ?.toNicknameDTO()
             ?: throw MemberNotFoundException(email)
+    }
+
+    @Transactional(readOnly = true)
+    fun isEmailExists(email: String): Member? {
+        return memberRepository.findMemberByEmailOrNull(email)
+    }
+
+    @Transactional(readOnly = true)
+    fun isNicknameExists(nickname: String): Member? {
+        return memberRepository.findMemberByNicknameOrNull(nickname)
     }
 
 }
