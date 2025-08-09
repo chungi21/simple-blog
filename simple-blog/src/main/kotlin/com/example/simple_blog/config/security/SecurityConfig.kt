@@ -71,9 +71,8 @@ class SecurityConfig(
         http.authorizeHttpRequests {
             it
                 .requestMatchers("/login", "/logout", "/api/member/join").permitAll()
-                .requestMatchers("/api/members/check-email", "/api/members/check-nickname").permitAll() // ✅ 추가
-                .requestMatchers("/api/member/email/**").permitAll()
-                .requestMatchers("/api/members/recent").permitAll()
+                .requestMatchers("/api/members/check-email", "/api/members/check-nickname", "/api/members/recent").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/members/**").permitAll()
                 .requestMatchers("/api/members/me").authenticated()
                 .requestMatchers("/api/members/**").hasRole("USER")
                 .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/*").permitAll()
