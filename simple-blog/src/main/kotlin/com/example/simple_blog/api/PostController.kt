@@ -7,6 +7,7 @@ import com.example.simple_blog.exception.UnauthorizedException
 import com.example.simple_blog.service.PostService
 import com.example.simple_blog.util.value.CmResDTO
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -20,7 +21,7 @@ class PostController(
     // 게시글 목록 조회 (전체 + 회원별)
     @GetMapping("")
     fun findPosts(
-        @PageableDefault(size = 10) pageable: Pageable,
+        @PageableDefault(size = 10, sort = ["createAt"], direction = Sort.Direction.DESC) pageable: Pageable,
         @RequestParam(required = false) email: String?
     ): CmResDTO<*> {
         val posts = if (email.isNullOrBlank()) {

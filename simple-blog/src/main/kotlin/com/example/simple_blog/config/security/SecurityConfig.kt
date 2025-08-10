@@ -74,6 +74,7 @@ class SecurityConfig(
                 .requestMatchers("/api/members/check-email", "/api/members/check-nickname", "/api/members/recent").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/members/**").permitAll()
                 .requestMatchers("/api/members/me").hasRole("USER")
+                .requestMatchers(HttpMethod.DELETE,"/api/members/").hasRole("USER")
                 .requestMatchers("/api/members/**").hasRole("USER")
                 .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/*").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/posts/form", "/api/posts/*/form").hasRole("USER")
