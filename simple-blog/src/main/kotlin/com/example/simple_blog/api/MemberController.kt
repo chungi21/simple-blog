@@ -37,9 +37,9 @@ class MemberController(private val memberService: MemberService) {
     }
 
     // 회원 삭제
-    @DeleteMapping("/{id}")
-    fun deleteById(@PathVariable id : Long): CmResDTO<Any> {
-        return CmResDTO(HttpStatus.OK, "delete Member by id", memberService.deleteMember(id))
+    @DeleteMapping("/")
+    fun deleteById(@AuthenticationPrincipal user: PrincipalDetails): CmResDTO<Any> {
+        return CmResDTO(HttpStatus.OK, "delete Member by id", memberService.delete(user.member.id!!))
     }
 
     // 회원 정보 수정

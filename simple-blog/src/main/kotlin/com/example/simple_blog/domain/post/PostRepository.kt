@@ -15,6 +15,7 @@ import org.springframework.data.support.PageableExecutionUtils
 interface PostRepository : JpaRepository<Post, Long>, PostCustomRepository {
     // 네이티브 방식 (필요할 시 사용 가능)
     fun findByMember(member: Member, pageable: Pageable): Page<Post>
+    fun deleteByMember_Id(memberId: Long): Long
 }
 
 interface PostCustomRepository {

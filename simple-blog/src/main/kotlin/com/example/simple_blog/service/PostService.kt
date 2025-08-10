@@ -96,4 +96,9 @@ class PostService(
         )
     }
 
+    @Transactional
+    fun deleteByMemberId(memberId: Long) {
+        postRepository.deleteByMember_Id(memberId)
+    }
+
 }

@@ -6,6 +6,7 @@ import com.example.simple_blog.exception.MemberAlreadyExistsException
 import com.example.simple_blog.exception.NicknameAlreadyExistsException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class MemberService(
     private val memberRepository: MemberRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val postService: PostService,
+    private val commentService: CommentService
 ) {
 
     @Transactional(readOnly = true)
@@ -23,14 +26,18 @@ class MemberService(
         }
 
     @Transactional
-    fun deleteMember(id : Long){
-        return memberRepository.deleteById(id)
+    fun delete(memberId: Long) {
+        commentService.deleteByMemberId(memberId)
+        postService.deleteByMemberId(memberId)
+        SecurityContextHolder.clearContext()
+        return memberRepository.deleteById(memberId)
     }
 
+
     @Transactional
-    fun update(id: Long, dto: MemberUpdateReq): Member {
-        val member = memberRepository.findById(id).orElseThrow {
-            MemberNotFoundException(id.toString())
+    fun update(memberId: Long, dto: MemberUpdateReq): Member {
+        val member = memberRepository.findById(memberId).orElseThrow {
+            MemberNotFoundException(memberId.toString())
         }
 
         // 이메일 변경 여부 체크(이메일은 회원 정보 수정시 변경 불가)
@@ -40,7 +47,7 @@ class MemberService(
 
         // 닉네임 중복 체크
         val existing = memberRepository.findMemberByNicknameOrNull(dto.nickname)
-        if (existing != null && existing.id != id) {
+        if (existing != null && existing.id != memberId) {
             throw NicknameAlreadyExistsException(dto.nickname)
         }
 
