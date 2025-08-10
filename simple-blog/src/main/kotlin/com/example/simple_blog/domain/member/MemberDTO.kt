@@ -44,12 +44,13 @@ data class LoginReq(
 
 // 회원 정보 수정용
 data class MemberUpdateReq(
+    val email : String,
     val nickname: String,
     @JsonProperty("password")
     val rawpassword: String = ""
 )
 
-
+// Entity를 DTO로 변환할 때 사용
 data class MemberRes(
     var id : Long,
     val email : String,
@@ -60,6 +61,7 @@ data class MemberRes(
     val updateAt: LocalDateTime
 )
 
+// 이메일로 닉네임 검색 할 때 사용.(개인 블로그 상단에 사용함.)
 data class MemberNicknameRes(
     val nickname: String
 )

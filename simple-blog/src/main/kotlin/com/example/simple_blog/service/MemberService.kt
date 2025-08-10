@@ -37,11 +37,13 @@ class MemberService(
 
     @Transactional
     fun join(dto: MemberSaveReq): Member {
+        // 이메일 중복 체크
         val checkEmail = memberRepository.findMemberByEmailOrNull(dto.email)
         if (checkEmail != null) {
             throw MemberAlreadyExistsException(dto.email)
         }
 
+        // 닉네임 중복 체크
         val checkNickname = memberRepository.findMemberByNicknameOrNull(dto.nickname)
         if (checkNickname != null) {
             throw NicknameAlreadyExistsException(dto.nickname)
@@ -55,6 +57,11 @@ class MemberService(
     fun update(id: Long, dto: MemberUpdateReq): Member {
         val member = memberRepository.findById(id).orElseThrow {
             MemberNotFoundException(id.toString())
+        }
+
+        // 이메일 변경 여부 체크(이메일은 회원 정보 수정시 변경 불가)
+        if(dto.email != member.email){
+            throw IllegalArgumentException("Email cannot be changed.")
         }
 
         // 닉네임 중복 체크

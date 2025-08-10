@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class AuthService(
 	private val memberRepository: MemberRepository,
+	private val memberService: MemberService,
 	private val jwtManager: JwtManager
 ) : UserDetailsService {
 
@@ -33,7 +34,7 @@ class AuthService(
 
 	@Transactional
 	fun saveMember(dto : MemberSaveReq): MemberRes {
-		return memberRepository.save(dto.toEntity()).toDTO()
+		return memberService.join(dto).toDTO()
 	}
 
 	fun reIssueAccessToken(refreshToken: String): String {

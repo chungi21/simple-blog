@@ -1,6 +1,7 @@
 package com.example.simple_blog.api
 
 import com.example.simple_blog.config.security.PrincipalDetails
+import com.example.simple_blog.domain.member.MemberRes
 import com.example.simple_blog.domain.member.MemberUpdateReq
 import com.example.simple_blog.service.MemberService
 import com.example.simple_blog.util.value.CmResDTO
@@ -50,18 +51,13 @@ class MemberController(private val memberService: MemberService) {
         val updatedMember = memberService.update(user.member.id!!, dto)
         return CmResDTO(HttpStatus.OK, "member updated", updatedMember.toDTO())
     }
-
-
+    
     // 회원 정보 수정 Form
     @GetMapping("/me")
-    fun getCurrentMember(@AuthenticationPrincipal principal: PrincipalDetails?): CmResDTO<out Any?> {
-        return if (principal != null) {
-            val member = principal.member
-            val memberInfo = member.toDTO()
-            CmResDTO(HttpStatus.OK, "now login member info", memberInfo)
-        } else {
-            CmResDTO(HttpStatus.UNAUTHORIZED, "no login member info ", null)
-        }
+    fun getCurrentMember(@AuthenticationPrincipal principal: PrincipalDetails): CmResDTO<Any> {
+        val member = principal.member
+        val memberInfo = member.toDTO()
+        return CmResDTO(HttpStatus.OK, "now login member info", memberInfo)
     }
 
     // email 중복 체크(회원가입에서 사용)
@@ -75,7 +71,7 @@ class MemberController(private val memberService: MemberService) {
         }
     }
 
-    // nickname 중복 체크(회원가입에서 사용)
+    // nickname 중복 체크(회원가입, 회원 정보 수정에서 사용)
     @GetMapping("/check-nickname")
     fun checkNickname(@RequestParam nickname: String): CmResDTO<Any> {
         val exists = memberService.isNicknameExists(nickname)
