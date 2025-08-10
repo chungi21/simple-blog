@@ -3,23 +3,24 @@ package com.example.simple_blog.service
 import com.example.simple_blog.config.security.JwtManager
 import com.example.simple_blog.config.security.PrincipalDetails
 import com.example.simple_blog.config.security.TokenValidResult
+import com.example.simple_blog.domain.member.Member
 import com.example.simple_blog.domain.member.MemberRepository
-import com.example.simple_blog.domain.member.MemberRes
 import com.example.simple_blog.domain.member.MemberSaveReq
 import com.example.simple_blog.exception.BusinessException
 import com.example.simple_blog.exception.ErrorCode
+import com.example.simple_blog.exception.MemberAlreadyExistsException
+import com.example.simple_blog.exception.NicknameAlreadyExistsException
+import com.example.simple_blog.exception.InvalidPasswordLengthException
 import mu.KotlinLogging
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthService(
 	private val memberRepository: MemberRepository,
-	private val memberService: MemberService,
 	private val jwtManager: JwtManager
 ) : UserDetailsService {
 
@@ -33,8 +34,26 @@ class AuthService(
 	}
 
 	@Transactional
-	fun saveMember(dto : MemberSaveReq): MemberRes {
-		return memberService.join(dto).toDTO()
+	fun saveMember(dto : MemberSaveReq): Member {
+		// 이메일 중복 체크
+		val checkEmail = memberRepository.findMemberByEmailOrNull(dto.email)
+		if (checkEmail != null) {
+			throw MemberAlreadyExistsException(dto.email)
+		}
+
+		// 닉네임 중복 체크
+		val checkNickname = memberRepository.findMemberByNicknameOrNull(dto.nickname)
+		if (checkNickname != null) {
+			throw NicknameAlreadyExistsException(dto.nickname)
+		}
+
+		// 이메일 길이 확인(4자리 이상)
+		if(dto.rawpassword.length<4){
+			throw InvalidPasswordLengthException(dto.rawpassword.length)
+		}
+
+		val member = dto.toEntity()
+		return memberRepository.save(member)
 	}
 
 	fun reIssueAccessToken(refreshToken: String): String {

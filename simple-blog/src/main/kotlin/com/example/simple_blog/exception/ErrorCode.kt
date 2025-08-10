@@ -13,6 +13,7 @@ enum class ErrorCode(
 
     EMAIL_ALREADY_EXISTS("M001", "Email in use"),
     NICKNAME_ALREADY_EXISTS("M002", "Nickname in use"),
+    PASSWORD_TOO_SHORT("M003", "Password must be at least 4 characters long"),
 
     HANDLE_ACCESS_DENIED("A001", "No Reissue success"),
     UNAUTHORIZED("A002", "Unauthorized access"),

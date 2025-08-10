@@ -64,4 +64,11 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.NOT_FOUND)
     }
 
+    @ExceptionHandler(InvalidPasswordLengthException::class)
+    fun handleInvalidPasswordLengthException(e: InvalidPasswordLengthException): ResponseEntity<ErrorResponse> {
+        log.error { "InvalidPasswordLengthException : ${e.message}" }
+        val errorResponse = ErrorResponse.of(ErrorCode.PASSWORD_TOO_SHORT)
+        return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
+    }
+
 }

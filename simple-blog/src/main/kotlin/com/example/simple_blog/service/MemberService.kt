@@ -27,32 +27,6 @@ class MemberService(
         return memberRepository.deleteById(id)
     }
 
-    @Transactional(readOnly = true)
-    fun findMemberById(id : Long) : MemberRes{
-        return memberRepository.findById(id)
-            .orElseThrow{
-                throw MemberNotFoundException(id.toString())
-            }.toDTO()
-    }
-
-    @Transactional
-    fun join(dto: MemberSaveReq): Member {
-        // 이메일 중복 체크
-        val checkEmail = memberRepository.findMemberByEmailOrNull(dto.email)
-        if (checkEmail != null) {
-            throw MemberAlreadyExistsException(dto.email)
-        }
-
-        // 닉네임 중복 체크
-        val checkNickname = memberRepository.findMemberByNicknameOrNull(dto.nickname)
-        if (checkNickname != null) {
-            throw NicknameAlreadyExistsException(dto.nickname)
-        }
-
-        val member = dto.toEntity()
-        return memberRepository.save(member)
-    }
-
     @Transactional
     fun update(id: Long, dto: MemberUpdateReq): Member {
         val member = memberRepository.findById(id).orElseThrow {
