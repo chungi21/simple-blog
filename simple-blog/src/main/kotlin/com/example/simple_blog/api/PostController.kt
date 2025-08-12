@@ -42,9 +42,8 @@ class PostController(
     @DeleteMapping("/{postId}")
     fun deleteById(
         @PathVariable postId : Long,
-        @AuthenticationPrincipal principal: PrincipalDetails?
+        @AuthenticationPrincipal principal: PrincipalDetails
     ): CmResDTO<Any> {
-        principal ?: throw UnauthorizedException()
         val member = principal.member
         return CmResDTO(HttpStatus.OK, "delete post by id", postService.deletePost(postId, member))
     }
@@ -53,9 +52,8 @@ class PostController(
     @PostMapping("")
     fun save(
         @RequestBody dto: PostSaveReq,
-        @AuthenticationPrincipal principal: PrincipalDetails?
+        @AuthenticationPrincipal principal: PrincipalDetails
     ): CmResDTO<*> {
-        principal ?: throw UnauthorizedException()
         val member = principal.member
         return CmResDTO(HttpStatus.OK, "save post", postService.save(dto, member))
     }
@@ -73,9 +71,8 @@ class PostController(
     fun updatePost(
         @PathVariable postId: Long,
         @RequestBody dto: PostUpdateReq,
-        @AuthenticationPrincipal principal: PrincipalDetails?
+        @AuthenticationPrincipal principal: PrincipalDetails
     ): CmResDTO<*> {
-        principal ?: throw UnauthorizedException()
         val member = principal.member
         return CmResDTO(HttpStatus.OK, "update post", postService.updatePost(postId, dto, member))
     }
@@ -84,9 +81,8 @@ class PostController(
     @GetMapping("/{postId}/form")
     fun editForm(
         @PathVariable postId: Long,
-        @AuthenticationPrincipal principal: PrincipalDetails?
+        @AuthenticationPrincipal principal: PrincipalDetails
     ): CmResDTO<*> {
-        principal ?: throw UnauthorizedException()
         val member = principal.member
         val response = postService.getPostForEdit(postId, member)
         return CmResDTO(HttpStatus.OK, "edit form", response)

@@ -16,11 +16,6 @@ class PostService(
     private val memberRepository: MemberRepository
 ) {
 
-    @Transactional(readOnly = true)
-    fun findPosts(pageable: Pageable) : Page<PostRes> {
-        return postRepository.findPosts(pageable).map { it.toDTO()}
-    }
-
     @Transactional
     fun save(dto: PostSaveReq, member: Member): PostRes {
         // 제목 필수 체크
@@ -41,17 +36,9 @@ class PostService(
         return postRepository.save(post).toDTO()
     }
 
-    @Transactional
-    fun deletePost(postId : Long, member: Member){
-        val post = postRepository.findById(postId).orElseThrow {
-            throw InvalidRequestException("post does not exist.")
-        }
-
-        if (post.member.id != member.id) {
-            throw AccessDeniedCustomException("no permission.")
-        }
-
-        return postRepository.deleteById(postId)
+    @Transactional(readOnly = true)
+    fun findPosts(pageable: Pageable) : Page<PostRes> {
+        return postRepository.findPosts(pageable).map { it.toDTO()}
     }
 
     @Transactional(readOnly = true)
@@ -114,6 +101,19 @@ class PostService(
     @Transactional
     fun deleteByMemberId(memberId: Long) {
         postRepository.deleteByMember_Id(memberId)
+    }
+
+    @Transactional
+    fun deletePost(postId : Long, member: Member){
+        val post = postRepository.findById(postId).orElseThrow {
+            throw InvalidRequestException("post does not exist.")
+        }
+
+        if (post.member.id != member.id) {
+            throw AccessDeniedCustomException("no permission.")
+        }
+
+        return postRepository.deleteById(postId)
     }
 
 }
