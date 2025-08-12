@@ -1,6 +1,7 @@
 package com.example.simple_blog.service
 
 import com.example.simple_blog.domain.member.*
+import com.example.simple_blog.exception.InvalidPasswordLengthException
 import com.example.simple_blog.exception.MemberNotFoundException
 import com.example.simple_blog.exception.MemberAlreadyExistsException
 import com.example.simple_blog.exception.NicknameAlreadyExistsException
@@ -40,9 +41,9 @@ class MemberService(
             MemberNotFoundException(memberId.toString())
         }
 
-        // 이메일 변경 여부 체크(이메일은 회원 정보 수정시 변경 불가)
-        if(dto.email != member.email){
-            throw IllegalArgumentException("Email cannot be changed.")
+        // 닉네임 값이 있는지 체크
+        if (dto.nickname.isNullOrBlank()) {
+            throw IllegalArgumentException("required input nickname")
         }
 
         // 닉네임 중복 체크
@@ -51,9 +52,18 @@ class MemberService(
             throw NicknameAlreadyExistsException(dto.nickname)
         }
 
+        // 이메일 변경 여부 체크(이메일은 회원 정보 수정시 변경 불가)
+        if(dto.email != member.email){
+            throw IllegalArgumentException("Email cannot be changed.")
+        }
+
         member.changeNickname(dto.nickname)
 
+        // 비밀번로 변경 여부
         if (dto.rawpassword.isNotBlank()) {
+            if(dto.rawpassword.length<4){
+                throw InvalidPasswordLengthException(dto.rawpassword.length)
+            }
             member.changePassword(passwordEncoder.encode(dto.rawpassword))
         }
 

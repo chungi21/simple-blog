@@ -35,6 +35,22 @@ class AuthService(
 
 	@Transactional
 	fun saveMember(dto : MemberSaveReq): Member {
+		// 유효성 검사
+		// 이메일 값이 있는지 체크
+		if (dto.email.isNullOrBlank()) {
+			throw IllegalArgumentException("required input email")
+		}
+
+		// 닉네임 값이 있는지 체크
+		if (dto.nickname.isNullOrBlank()) {
+			throw IllegalArgumentException("required input nickname")
+		}
+		
+		// 비밀번호 값이 있는지 체크
+		if (dto.rawpassword.isNullOrBlank()) {
+			throw IllegalArgumentException("required input password")
+		}
+
 		// 이메일 중복 체크
 		val checkEmail = memberRepository.findMemberByEmailOrNull(dto.email)
 		if (checkEmail != null) {

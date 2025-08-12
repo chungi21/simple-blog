@@ -17,10 +17,19 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class MemberController(private val memberService: MemberService) {
 
-    // 전체 회원 리스트
+    // 회원 조회(전체 + 최근)
     @GetMapping("")
-    fun findAll(@PageableDefault(size = 10) pageable: Pageable) : CmResDTO<*> {
-        return CmResDTO(HttpStatus.OK, "find All Members", memberService.findAll(pageable))
+    fun findMembers(
+        @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
+        pageable: Pageable,
+        @RequestParam(required = false) limit: Int?
+    ): CmResDTO<*> {
+        val newPageable = if (limit != null) {
+            PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "createdAt"))
+        } else {
+            pageable
+        }
+        return CmResDTO(HttpStatus.OK, "find members", memberService.findAll(newPageable))
     }
 
     // 회원 조회(기준 이메일로 조회, 회원블로그 상단 배너에 사용)
@@ -28,14 +37,7 @@ class MemberController(private val memberService: MemberService) {
     fun searchNicknameFindByEmail(@PathVariable email: String): CmResDTO<Any> {
         return CmResDTO(HttpStatus.OK, "Nickname by email ", memberService.findByEmail(email))
     }
-
-    // 최근 가입한 10명 보여주기(메인에 사용)
-    @GetMapping("/recent")
-    fun findRecentMembers(): CmResDTO<*> {
-        val pageable: Pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"))
-        return CmResDTO(HttpStatus.OK, "Recent 10 members", memberService.findAll(pageable))
-    }
-
+    
     // 회원 삭제
     @DeleteMapping("/")
     fun deleteById(@AuthenticationPrincipal user: PrincipalDetails): CmResDTO<Any> {

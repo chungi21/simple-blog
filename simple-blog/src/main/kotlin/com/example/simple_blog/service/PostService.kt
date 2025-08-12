@@ -23,17 +23,22 @@ class PostService(
 
     @Transactional
     fun save(dto: PostSaveReq, member: Member): PostRes {
+        // 제목 필수 체크
+        if (dto.title.isNullOrBlank()) {
+            throw IllegalArgumentException("required input title")
+        }
+
+        // 내용 필수 체크
+        if (dto.content.isNullOrBlank()) {
+            throw IllegalArgumentException("required input content")
+        }
+
         val post = Post(
             title = dto.title,
             content = dto.content,
             member = member
         )
         return postRepository.save(post).toDTO()
-    }
-
-    @Transactional
-    fun deletePost(id : Long){
-        return postRepository.deleteById(id)
     }
 
     @Transactional
@@ -66,6 +71,16 @@ class PostService(
 
     @Transactional
     fun updatePost(postId: Long, dto: PostUpdateReq, member: Member): PostRes {
+        // 제목 필수 체크
+        if (dto.title.isNullOrBlank()) {
+            throw IllegalArgumentException("required input title")
+        }
+
+        // 내용 필수 체크
+        if (dto.content.isNullOrBlank()) {
+            throw IllegalArgumentException("required input content")
+        }
+
         val post = postRepository.findById(postId).orElseThrow {
             throw InvalidRequestException("post does not exist.")
         }
