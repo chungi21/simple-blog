@@ -12,12 +12,12 @@
   * [백엔드](#백엔드)
   * [프론트엔드](#프론트엔드)
 * [설계](#구조-설계)
-  * [DB 설계](#DB-설계)
-  * [API 설계](#API-설계)
+  * [DB 설계](#db-설계)
+  * [API 설계](#api-설계)
 * [개발내용](#개발내용)
 * [실행화면](#실행화면)
 * [후기](#후기)
-
+<br><br>
 ## 프로젝트 개요
 * 프로젝트 명 : Simple Blog
 * 개발 인원 : 1명
@@ -38,7 +38,7 @@
     * 최근 가입 회원 목록(메인 화면)
     * 최근 게시 글 목록(메인 화면)
     * 로그인/비로그인 상태에 따른 UI · 기능 접근 제어
-    
+<br><br>
 ## 사용 기술
 ### 백엔드
 * 주요 프레임워크 / 라이브러리
@@ -63,7 +63,7 @@
 * React
 * JavaScript
 * Tailwind
-
+<br><br>
 ## 구조 설계
 ### DB 설계
 * 회원 테이블(테이블 명 : Member) <br>
@@ -73,7 +73,6 @@
 * 댓글 테이블(테이블 명 : Comment)<br>
 <img width="528" height="271" alt="Image" src="https://github.com/user-attachments/assets/f2bc29ed-2b0c-46f9-8cd1-7f5414b25e87" /><br>
 
-
 ### API 설계
 * 회원 관련 API<br>
 <img width="579" height="533" alt="Image" src="https://github.com/user-attachments/assets/0f0f8926-881a-4e2d-be13-0865986faf53" /><br>
@@ -81,8 +80,7 @@
 <img width="578" height="286" alt="Image" src="https://github.com/user-attachments/assets/feb3a464-a3e0-408e-863e-edd47cedaba5" /><br>
 * 댓글 관련 API<br>
 <img width="579" height="182" alt="Image" src="https://github.com/user-attachments/assets/8e83e3b1-99da-47bb-8c19-f68ff600c385" /><br>
-
-
+<br><br>
 ## 개발내용
 * 백엔드 구현
   * [Spring Security와 JWT를 활용한 회원 인증·인가 구현](https://luckygirljinny.tistory.com/442)
@@ -104,7 +102,7 @@
   * [프론트엔드 유효성 검사 로직 구현](https://luckygirljinny.tistory.com/444)
   * [React 컴포넌트를 활용한 페이징 처리](https://luckygirljinny.tistory.com/451)
   * [프론트엔드 접근 권한 제어](https://luckygirljinny.tistory.com/445)
-    
+<br>
 
 ## 실행화면
 <details>
@@ -262,8 +260,7 @@
   <br>
   
 </details>
-
-
+<br>
 
 ## 후기
 이번 프로젝트는 기존에 진행했었던 Java 기반의 JSP, Thymeleaf 프로젝트와 달리, Kotlin과 React를 도입하여 진행했다는 점에서 큰 변화가 있었습니다.<br>
@@ -272,7 +269,7 @@
 프로젝트를 시작하기 전, 먼저 Kotlin을 학습하여 Java와 높은 호환성을 유지하면서도 더 간결하고 안전한 문법을 익혔습니다. 예를 들어, data class를 이용해 DTO를 간단히 정의하거나, 널 안정성(Null Safety)을 통해 런타임 오류를 줄이는 등의 장점을 실제 코드에 적용했습니다. Java에서 사용하던 라이브러리와 스프링 부트 설정을 그대로 활용할 수 있어, 새로운 언어를 도입하면서도 기존 경험을 살릴 수 있었습니다.<br>
 이후 React를 학습하여 프론트엔드 개발을 진행했는데, 기존 서버 렌더링 방식과 달리 컴포넌트 기반 개발을 경험하면서 화면 구성과 데이터 관리의 분리를 체감할 수 있었습니다. API 호출과 UI 컴포넌트를 명확하게 분리해 유지보수성을 높였고, 필요한 데이터만 가져와 렌더링하는 효율적인 구조를 만들었습니다. 예를 들어, 메인 페이지에서 최근 회원 목록과 게시글 목록을 각각 독립된 API로 호출하고, MembersItem과 같은 재사용 가능한 UI 컴포넌트를 구성했습니다.<br><br>
 
-또한, 지난 프로젝트에서는 RESTful 구조를 지키지 못했던 점이 아쉬웠기에, 이번에는 URL 설계, HTTP 메서드 사용, 응답 형식을 일관성 있게 관리하는 데 특히 신경을 썼습니다. React 측에서도 API 호출 로직을 memberApi, postApi 등으로 모듈화하여 화면 로직과 데이터 로직을 분리하는 구조를 적용했습니다. 이를 통해 프로젝트 구조가 명확해지고, 기능 확장 시에도 변경 범위를 최소화할 수 있었습니다.<br>
+또한, 지난 프로젝트에서는 RESTful 구조를 지키지 못했던 점이 아쉬웠기에, 이번에는 URL 설계, HTTP 메서드 사용, 응답 형식을 일관성 있게 관리하는 데 특히 신경을 썼습니다. React 측에서도 API 호출 로직을 memberApi, postApi 등으로 모듈화하여 화면 로직과 데이터 로직을 분리하는 구조를 적용했습니다. 이를 통해 프로젝트 구조가 명확해지고, 기능 확장 시에도 변경 범위를 최소화할 수 있었습니다.<br><br>
 
 협업 경험을 살리기 위해 GitHub 연동에도 신경을 썼습니다. 지난번 팀 프로젝트에서 GitHub를 사용한 경험이 있었기에, 이번에는 혼자서도 체계적인 버전 관리를 해보고자 했습니다. 주요 기능이 완성될 때마다 커밋을 작성해 업로드하며, 변경 내역을 기록하고 필요 시 이전 버전으로 쉽게 되돌릴 수 있도록 했습니다.<br><br>
 
