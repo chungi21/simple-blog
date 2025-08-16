@@ -4,7 +4,7 @@
 > 이전 프로젝트는 Java로 개발했지만, 이번에는 Kotlin을 사용해 간결한 문법, nullable 타입, null 안전성, 그리고 Java 코드와의 호환성 등 Kotlin의 장점을 활용했습니다.<br>
 또한 기존의 서버 사이드 렌더링(JSP, Thymeleaf) 방식이 아닌 클라이언트 사이드 렌더링을 위해 React를 도입했습니다.
 > 이를 통해 React와 Kotlin 간의 페이지 상호작용 방식을 고민하며 구현했습니다.<br>
-이미지 넣기(메이 이미지)
+<img width="2215" height="2378" alt="Image" src="https://github.com/user-attachments/assets/54ce2446-b878-4518-bcdc-6b0faa2bd715" />
 
 ## 목차
 * [프로젝트 개요](#프로젝트-개요)
@@ -67,24 +67,24 @@
 ## 구조 설계
 ### DB 설계
 * 회원 테이블(테이블 명 : Member) <br>
-이미지 넣기<br>
+<img width="527" height="306" alt="Image" src="https://github.com/user-attachments/assets/8ba3918c-533e-469a-a046-b8a4dbdfb378" /><br>
 * 게시판 테이블(테이블 명 : Post) <br>
-이미지 넣기<br>
+<img width="523" height="270" alt="Image" src="https://github.com/user-attachments/assets/8decdfae-272f-43e0-954d-942972291429" /><br>
 * 댓글 테이블(테이블 명 : Comment)<br>
-이미지 넣기기<br>
+<img width="528" height="271" alt="Image" src="https://github.com/user-attachments/assets/f2bc29ed-2b0c-46f9-8cd1-7f5414b25e87" />이미지 넣기기<br>
 
 
 ### API 설계
 * 회원 관련 API<br>
-이미지 넣기<br>
+<img width="579" height="533" alt="Image" src="https://github.com/user-attachments/assets/0f0f8926-881a-4e2d-be13-0865986faf53" /><br>
 * 게시판 관련 API<br>
-이미지 넣기<br>
+<img width="578" height="286" alt="Image" src="https://github.com/user-attachments/assets/feb3a464-a3e0-408e-863e-edd47cedaba5" /><br>
 * 댓글 관련 API<br>
-이미지 넣<br>
+<img width="579" height="182" alt="Image" src="https://github.com/user-attachments/assets/8e83e3b1-99da-47bb-8c19-f68ff600c385" /><br>
 
 
 ## 개발내용
-* 백엔드 구
+* 백엔드 구현
   * Spring Security와 JWT를 활용한 회원 인증·인가 구현
   * 백엔드 유효성 검사 구현
   * 백엔드 접근 권한 제어
@@ -112,7 +112,7 @@
   <ul>
     <li> 메인 페이지에서는 최신 게시글 목록, 최근 가입 멤버의 목록이 보입니다.</li>
   </ul>
- 이미지 넣기<br>
+ <img width="2215" height="2378" alt="Image" src="https://github.com/user-attachments/assets/7e076a3d-a0e6-4921-adc7-97ab7470638e" /><br>
 </details>
 
 <details>
@@ -124,7 +124,7 @@
     <li> header에 글 쓰기 버튼을 통해 글 쓰기 Form을 통해 접근할 수 있습니다.</li>
     <li> 글 작성 시에는 제목과 내용이 입력되어야지만 작성이 가능하며 작성 완료가 되면 작성한 글의 상세페이지로 넘어갑니다.</li>
   </ul>
-  이미지 넣기
+  ![Image](https://github.com/user-attachments/assets/794739ea-69c0-4013-bbdd-f8aafb69741f)
   <br>
 
   <br>
@@ -133,7 +133,7 @@
     <li> 글 목록 또는 글 작성 후에 상세 페이지를 통해 접근 가능하며, 비로그인 회원도 이용 가능 합니다.</li>
     <li> 글 상세페이지에는 작성된 글과 내용이 보이며, 글 작성자일 경우에는 해당 글 '수정', '삭제' 버튼이 보입니다. </li>
   </ul>
-  이미지 넣기
+  ![Image](https://github.com/user-attachments/assets/e49852d7-647a-42d9-8eaa-49a5ad49ddd7)
   <br>
 
   <br>
@@ -145,7 +145,9 @@
     <li> 전체 회원글 목록일 경우 상단에 '전체 회원 게시물'이라 써져 있으며, 목록에는 제목, 내용, 글 작성자의 블로그로 이동 할 수 있는 버튼이 보입니다.</li>
     <li> 목록은 페이징처리하였습니다.</li>
   </ul>
-  이미지 넣기
+  ![Image](https://github.com/user-attachments/assets/c9e74a03-9941-460d-89e8-2a289096973b)
+  <hr>
+  ![Image](https://github.com/user-attachments/assets/3bef6d87-15fc-4ffa-913d-3e452b48235f)
   <br>
 
   <br>
@@ -155,7 +157,7 @@
     <li> 글 수정 페이지는 글을 작성한 본인만 수정이 가능합니다.</li>
     <li> 글 수정이 완료되면 글 상세페이지로 이동합니다.</li>
   </ul>
-  이미지 넣기
+  ![Image](https://github.com/user-attachments/assets/2ff5a919-a2a9-43f3-94a5-66c85d629909)
   <br>
 
   <br>
@@ -165,7 +167,7 @@
     <li> 글 삭제는 글 작성자 본인만 가능합니다.</li>
     <li> 글 삭제 완료 후에는 목록으로 이동합니다.</li>
   </ul>
-  이미지 넣기
+  <img width="739" height="446" alt="Image" src="https://github.com/user-attachments/assets/c083839f-b9c3-4ed2-8d22-35278f6e3735" />
   <br>
   
 </details>
@@ -178,7 +180,7 @@
     <li> 댓글은 글 상세 화면에서 작성 가능하며, 로그인한 사용자만 댓글 쓰기가 가능합니다.</li>
     <li> 댓글 작성 후에는 댓글을 작성한 게시물의 상세 화면으로 이동하며, 작성된 댓글은 게시물 상세 화면 하단에 목록에서 볼 수 있습니다.</li>
   </ul>
-   이미지 넣기
+   ![Image](https://github.com/user-attachments/assets/8a53b654-428f-4a95-aef9-6717b4029acf)
    <br>
 
   <br>
@@ -188,7 +190,7 @@
     <li> 댓글 목록은 게시글 상세 화면 하단에 확인 가능합니다.</li>
     <li> 댓글 목록에서 본인이 쓴 댓글에는 '수정', '삭제'버튼이 보입니다.</li>
   </ul>
-   이미지 넣기
+   ![Image](https://github.com/user-attachments/assets/e3f71f56-1c17-4ca2-812e-0efffbe459c6)
    <br>
 
   <br>
@@ -198,16 +200,16 @@
     <li> 댓글 목록에서 '수정'버튼을 눌러 수정이 가능하며, '수정'버튼을 누르면 해당 댓글 있는 자리에 textarea로 변경되어 수정이 가능합니다.</li>
     <li> 댓글 수정이 완료되면 댓글 수정한 게시물의 상세 화면으로 이동합니다.</li>
   </ul>
-   이미지 넣기
+   ![Image](https://github.com/user-attachments/assets/aa32c829-6f81-4133-bcd9-a0eaaeb9bad3)
    <br>
 
   <br>
-  <strong>4. 댓글 삭 화면</strong>
+  <strong>4. 댓글 삭제 화면</strong>
   <ul>
     <li> 댓글 삭제는 본인이 쓴 댓글만 삭제가 가능합니다.</li>
     <li> 댓글 삭제가 완료가되면 댓글 삭제한 게시물의 상세 화면으로 이동합니다.</li>
   </ul>
-   이미지 넣기
+   <img width="743" height="574" alt="Image" src="https://github.com/user-attachments/assets/ad511a3f-e40a-4987-a9be-6aa8cbb2e1ab" />
    <br>
   
  <br>
@@ -223,7 +225,7 @@
     <li> 이메일, 닉네임, 비밀번호를 입력해야지만 회원 가입이 가능하며, 가입 시 이메일, 닉네임 중복이아니고, 비밀번호는 4자리 이상이어야지마 가입할 수 있도록 했습니다.</li>
     <li> 가입이 완료되면 로그인 form 화면으로 이동합니다.</li>
   </ul>
-  이미지 넣기
+  <img width="1112" height="377" alt="Image" src="https://github.com/user-attachments/assets/9cbd00c5-5959-4efb-95b6-d3f8211459e6" />
   <br>
 
   <br>
@@ -233,7 +235,7 @@
     <li> 이메일과 비밀번호를 입력해야지만 로그인이 가능합니다.</li>
     <li> 로그인이 완료되면 메인 화면으로 이동합니다.</li>
   </ul>
-  이미지 넣기
+  <img width="1111" height="274" alt="Image" src="https://github.com/user-attachments/assets/aa12ffed-35d2-46a8-86ce-0cbd506b9d43" />
   <br>
 
   <br>
@@ -245,7 +247,7 @@
     <li> 닉네임만 변경하고 비밀번호 변경을 아니할 때는 비밀번호는 빈 칸으로 놔두고 변경하면 됩니다.</li>
     <li> 변경 후에는 변경된 정보를 가지고 정보 수정 form으로 화면이 보입니다.</li>
   </ul>
-  이미지 넣기
+  <img width="1111" height="377" alt="Image" src="https://github.com/user-attachments/assets/4ac652e4-7ef5-4f76-91b6-49f0184cfdff" />
   <br>
 
   <br>
@@ -254,12 +256,10 @@
     <li> 회원 수정 form 하단에 회원 탈퇴 버튼을 통해 탈퇴 화면으로 이동합니다.</li>
     <li> 탈퇴 화면에는 탈퇴 시 안내사항에 동의 후에 탈퇴가 가능하며 탈퇴가 완료된 후에는 메인 화면으로 이동합니다.</li>
   </ul>
-  이미지 넣기
+  <img width="1112" height="239" alt="Image" src="https://github.com/user-attachments/assets/e70758d2-c737-4a7a-9bab-5a7155ba917e" />
   <br>
   
 </details>
-
-
 
 
 
