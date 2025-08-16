@@ -71,7 +71,7 @@
 * 게시판 테이블(테이블 명 : Post) <br>
 <img width="523" height="270" alt="Image" src="https://github.com/user-attachments/assets/8decdfae-272f-43e0-954d-942972291429" /><br>
 * 댓글 테이블(테이블 명 : Comment)<br>
-<img width="528" height="271" alt="Image" src="https://github.com/user-attachments/assets/f2bc29ed-2b0c-46f9-8cd1-7f5414b25e87" />이미지 넣기기<br>
+<img width="528" height="271" alt="Image" src="https://github.com/user-attachments/assets/f2bc29ed-2b0c-46f9-8cd1-7f5414b25e87" /><br>
 
 
 ### API 설계
@@ -85,23 +85,25 @@
 
 ## 개발내용
 * 백엔드 구현
-  * Spring Security와 JWT를 활용한 회원 인증·인가 구현
-  * 백엔드 유효성 검사 구현
-  * 백엔드 접근 권한 제어
+  * [Spring Security와 JWT를 활용한 회원 인증·인가 구현](https://luckygirljinny.tistory.com/442)
+  * [백엔드 유효성 검사 구현](https://luckygirljinny.tistory.com/444)
+  * [백엔드 접근 권한 제어](https://luckygirljinny.tistory.com/446)
   * 게시판·댓글·회원 CRUD 기능 구현
-  * Kotlin(Spring Boot)과 React 연동 방법
-  * RESTful API 설계 및 구현
-  * Kotlin JDSL을 활용한 동적 쿼리 작성
-  * 전역 예외 처리 및 예외 클래스 관리
-  * 응답 표준화 (공통 API Response 구조 설계)
-  * CORS 정책 설정
-  * 데이터베이스 설계 및 최적화 (ERD 설계, 인덱스, N+1 문제 해결)
+    * [게시판 CRUD 기능 구현](https://luckygirljinny.tistory.com/449)
+    * [댓글 CRUD 기능 구현](https://luckygirljinny.tistory.com/450)
+    * [회원 CRUD 기능 구현](https://luckygirljinny.tistory.com/448)
+  * [Kotlin(Spring Boot)과 React 연동 방법](https://luckygirljinny.tistory.com/452)
+  * [RESTful API 설계 및 구현](https://luckygirljinny.tistory.com/454)
+  * [Kotlin JDSL을 활용한 동적 쿼리 작성](https://luckygirljinny.tistory.com/456)
+  * [전역 예외 처리 및 예외 클래스 관리](https://luckygirljinny.tistory.com/457)
+  * [응답 표준화(공통 API Response 구조 설계)](https://luckygirljinny.tistory.com/458)
+  * [CORS 정책 설정](https://luckygirljinny.tistory.com/459)
+  * [데이터베이스 설계 및 최적화(ERD 설계, 인덱스, N+1 문제 해결)](https://luckygirljinny.tistory.com/460)
  
 * 프론트엔드 구현
-  * 프론트엔드 유효성 검사 로직 구현
-  * 프론트엔드 접근 권한 제어
-  * React 컴포넌트를 활용한 페이징 처리
-  * 프론트엔드 접근 권한 제어
+  * [프론트엔드 유효성 검사 로직 구현](https://luckygirljinny.tistory.com/444)
+  * [React 컴포넌트를 활용한 페이징 처리](https://luckygirljinny.tistory.com/451)
+  * [프론트엔드 접근 권한 제어](https://luckygirljinny.tistory.com/445)
     
 
 ## 실행화면
